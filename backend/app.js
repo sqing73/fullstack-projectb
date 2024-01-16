@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const { connectDB, disconnectDB } = require("./db");
 const hrRoutes = require("./routers/hr");
+const employeeRoutes = require("./routers/employee");
 const errorHandler = require("./middlewares/errorHanlder");
 
 const app = express();
@@ -21,6 +22,7 @@ app.get("/server-status", (req, res, next) => {
 });
 
 app.use("/hr", hrRoutes);
+app.use("/employee", employeeRoutes);
 
 // add routes above
 

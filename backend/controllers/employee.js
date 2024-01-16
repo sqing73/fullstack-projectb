@@ -1,27 +1,27 @@
 const ApiError = require("../errors/ApiError");
-const HrModel = require("../models/hr");
+const EmployeeModel = require("../models/employee");
 const jwt = require("jsonwebtoken");
 
 const signin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const existingHr = await HrModel.findOne({
+    const existingEmployee = await EmployeeModel.findOne({
       username: { $eq: username },
     });
-    if (!existingHr) {
+    if (!existingEmployee) {
       throw new ApiError(404, "Username does not exist");
     }
 
-    const isPasswordCorrect = password === existingHr.password;
+    const isPasswordCorrect = password === existingEmployee.password;
     if (!isPasswordCorrect) {
       throw new ApiError(400, "Invalid password");
     }
 
-    existingHr.status = "active";
-    await existingHr.save();
+    existingEmployee.status = "active";
+    await existingEmployee.save();
 
     const payload = {
-      _id: existingHr._id,
+      _id: existingEmployee._id,
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -31,9 +31,10 @@ const signin = async (req, res, next) => {
     return res.status(200).json({
       token,
       user: {
-        _id: existingHr._id,
-        username: existingHr.username,
-        role: "hr",
+        _id: existingEmployee._id,
+        username: existingEmployee.username,
+        email: existingEmployee.email,
+        role: "employee",
       },
       tokenUpdatedAt: new Date().toLocaleString(),
     });
