@@ -3,7 +3,7 @@ const express = require("express");
 const { connectDB, disconnectDB } = require("./db");
 const hrRoutes = require("./routers/hr");
 const employeeRoutes = require("./routers/employee");
-const errorHandler = require("./middlewares/errorHanlder");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 connectDB();
@@ -24,7 +24,7 @@ app.get("/server-status", (req, res, next) => {
 app.use("/hr", hrRoutes);
 app.use("/employee", employeeRoutes);
 
-// add routes above
+// add routes above this line
 
 app.use(errorHandler);
 

@@ -42,4 +42,14 @@ const signin = async (req, res, next) => {
   }
 };
 
-module.exports = { signin };
+const logout = async (req, res, next) => {
+  try {
+    req.user.status = "inactive";
+    await req.user.save();
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signin, logout };
