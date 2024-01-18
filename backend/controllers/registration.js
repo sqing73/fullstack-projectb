@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const ApiError = require("../errors/ApiError");
 const RegistraionModel = require("../models/registration");
 const generateRandomString = require("../utils/randomString");
+const sendEmail = require("../utils/sendEmail");
 
 const addRegistration = async (req, res, next) => {
   try {
@@ -30,8 +31,10 @@ const addRegistration = async (req, res, next) => {
     if (newRegistration.isNew) {
       throw new ApiError("Registration already exists");
     }
+    const emailContent = `Link: ${process.env.CLIENT_URL}/registration/${newRegistration._id}\nToken: ${newRegistration.token}`;
+    await sendEmail(email, emailContent);
     res.status(201).json({
-      message: "Registration added successfully",
+      message: `Registration added successfully and an invitation was sent to ${email}.`,
     });
   } catch (error) {
     next(error);
