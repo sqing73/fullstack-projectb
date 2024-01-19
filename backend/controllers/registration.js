@@ -36,7 +36,7 @@ const addRegistration = async (req, res, next) => {
     <p>This token is valid for 3 hours till <b>${newRegistration.createdAt}.</b></p>`;
     await sendEmail(email, emailContent);
     res.status(201).json({
-      message: `Registration added successfully and an invitation was sent to ${email}.`,
+      message: `Registration created successfully and an invitation was sent to ${email}.`,
       registration: {
         _id: newRegistration._id,
         email: newRegistration.email,

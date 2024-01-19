@@ -1,5 +1,6 @@
 const ApiError = require("../errors/ApiError");
 const EmployeeModel = require("../models/employee");
+const RegistrationModel = require("../models/registration");
 const jwt = require("jsonwebtoken");
 
 const signin = async (req, res, next) => {
@@ -53,4 +54,70 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, logout };
+const signup = async (req, res, next) => {
+  try {
+    const { username, registrationId, token, password } = req.body;
+    const registration = await RegistrationModel.findById(registrationId);
+    if (!registration || registration.status === "inactive") {
+      throw new ApiError(404, "Registration is not found");
+    }
+
+    const creationTime = new Date(registration.createdAt);
+    const expired = creationTime.getTime() + 3 * 60 * 60 * 1000 < Date.now();
+    if (expired) {
+      throw new ApiError(400, "Registration expired, please contact hr");
+    }
+
+    const tokenCorrect = token === registration.token;
+    if (!tokenCorrect) {
+      throw new ApiError(400, "Invalid registraion token");
+    }
+
+    let existingEmployee = await EmployeeModel.findOne({
+      $or: [
+        {
+          email: registration.email,
+        },
+        {
+          username: registration.username,
+        },
+      ],
+    });
+    if (existingEmployee) {
+      const duplicateEmail = existingEmployee.email === registration.email;
+      if (duplicateEmail) {
+        throw new ApiError(400, "Employee alreay exists, please contact hr");
+      }
+      const duplicateUsername = existingEmployee.username === username;
+      if (duplicateUsername) {
+        throw new ApiError(
+          400,
+          "Username already used, please use another username"
+        );
+      }
+    }
+
+    registration.status = "inactive";
+    await registration.save();
+
+    let newEmployee = new EmployeeModel({
+      username,
+      password,
+      email: registration.email,
+    });
+
+    await newEmployee.save();
+    res.status(200).json({
+      message: "Employee signup successful",
+      employee: {
+        _id: newEmployee._id,
+        email: newEmployee.email,
+        username: newEmployee.username,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signin, logout, signup };
