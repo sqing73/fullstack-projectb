@@ -24,7 +24,7 @@ const sendEmail = async (email, content) => {
     from: "Employee Managment",
     to: email,
     subject: "Registration invitation",
-    text: content
+    html: content,
   });
 };
 

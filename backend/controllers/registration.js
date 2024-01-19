@@ -13,7 +13,7 @@ const addRegistration = async (req, res, next) => {
       }, "");
       throw new ApiError(400, formattedErrors);
     }
-    const { email, name } = req.body;
+    const { email, employee } = req.body;
     const existingRegistration = await RegistraionModel.findOne({
       email,
     });
@@ -23,7 +23,7 @@ const addRegistration = async (req, res, next) => {
 
     const newRegistration = new RegistraionModel({
       email,
-      name,
+      employeeName: employee,
       token: generateRandomString(4),
       status: "active",
     });
@@ -31,14 +31,60 @@ const addRegistration = async (req, res, next) => {
     if (newRegistration.isNew) {
       throw new ApiError("Registration already exists");
     }
-    const emailContent = `Link: ${process.env.CLIENT_URL}/registration/${newRegistration._id}\nToken: ${newRegistration.token}`;
+    const emailContent = `<p>Link: ${process.env.CLIENT_URL}/registration/${newRegistration._id}</p>
+    <p>Token: ${newRegistration.token}</p>
+    <p>This token is valid for 3 hours till <b>${newRegistration.createdAt}.</b></p>`;
     await sendEmail(email, emailContent);
     res.status(201).json({
       message: `Registration added successfully and an invitation was sent to ${email}.`,
+      registration: {
+        _id: newRegistration._id,
+        email: newRegistration.email,
+        employee: newRegistration.employeeName,
+        status: newRegistration.status,
+      },
     });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { addRegistration };
+const getRegistrationById = async (req, res, next) => {
+  try {
+    const { registrationId, token } = req.body;
+    const registration = await RegistraionModel.findById(registrationId);
+    if (!registration || registration.status === "inactive") {
+      throw new ApiError(404, "Registration is not found");
+    }
+
+    const creationTime = new Date(registration.createdAt);
+    const expired = creationTime.getTime() + 3 * 60 * 60 * 1000 < Date.now();
+    if (expired) {
+      throw new ApiError(400, "Registration expired, please contact hr");
+    }
+    let resMessage;
+    if (token !== undefined) {
+      const tokenCorrect = token === registration.token;
+      if (!tokenCorrect) {
+        throw new ApiError(400, "Invalid registraion token");
+      } else {
+        resMessage = "Registration token correct";
+      }
+    }
+
+    res.status(200).json({
+      message: resMessage,
+      registration: {
+        _id: registration._id,
+        email: registration.email,
+        createdAt: registration.createdAt,
+        employeeName: registration.employeenName,
+        status: registration.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { addRegistration, getRegistrationById };

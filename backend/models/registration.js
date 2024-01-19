@@ -16,7 +16,7 @@ const registrationSchema = new mongoose.Schema(
       type: Date,
       default: new Date(),
     },
-    name: {
+    employeeName: {
       type: String,
       required: true,
       trim: true,
