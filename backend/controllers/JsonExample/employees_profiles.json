@@ -1,0 +1,72 @@
+[
+    {
+        "name": "John Doe",
+        "ssn": "123-45-6789",
+        "workAuthorizationTitle": "Permanent Resident",
+        "phoneNumber": "555-1234",
+        "email": "johndoe@example.com"
+    },
+    {
+        "name": "Jane Smith",
+        "ssn": "987-65-4321",
+        "workAuthorizationTitle": "H1B Visa Holder",
+        "phoneNumber": "555-5678",
+        "email": "janesmith@example.com"
+    },
+    {
+        "name": "Alice Johnson",
+        "ssn": "234-56-7890",
+        "workAuthorizationTitle": "Citizen",
+        "phoneNumber": "555-8765",
+        "email": "alicejohnson@example.com"
+    },
+    {
+        "name": "Bob Williams",
+        "ssn": "345-67-8901",
+        "workAuthorizationTitle": "Work Visa",
+        "phoneNumber": "555-4321",
+        "email": "bobwilliams@example.com"
+    },
+    {
+        "name": "Carol Thomas",
+        "ssn": "456-78-9012",
+        "workAuthorizationTitle": "Permanent Resident",
+        "phoneNumber": "555-6789",
+        "email": "carolthomas@example.com"
+    },
+    {
+        "name": "David Wilson",
+        "ssn": "567-89-0123",
+        "workAuthorizationTitle": "Citizen",
+        "phoneNumber": "555-3456",
+        "email": "davidwilson@example.com"
+    },
+    {
+        "name": "Eve Brown",
+        "ssn": "678-90-1234",
+        "workAuthorizationTitle": "H1B Visa Holder",
+        "phoneNumber": "555-7890",
+        "email": "evebrown@example.com"
+    },
+    {
+        "name": "Frank Jones",
+        "ssn": "789-01-2345",
+        "workAuthorizationTitle": "Work Visa",
+        "phoneNumber": "555-6543",
+        "email": "frankjones@example.com"
+    },
+    {
+        "name": "Grace Miller",
+        "ssn": "890-12-3456",
+        "workAuthorizationTitle": "Permanent Resident",
+        "phoneNumber": "555-0987",
+        "email": "gracemiller@example.com"
+    },
+    {
+        "name": "Henry Davis",
+        "ssn": "901-23-4567",
+        "workAuthorizationTitle": "Citizen",
+        "phoneNumber": "555-5674",
+        "email": "henrydavis@example.com"
+    }
+]
