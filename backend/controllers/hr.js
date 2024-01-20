@@ -24,8 +24,9 @@ const signin = async (req, res, next) => {
       _id: existingHr._id,
     };
 
+    const expirationTime = process.env.JWT_EXPIRATION;
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: expirationTime,
     });
 
     return res.status(200).json({

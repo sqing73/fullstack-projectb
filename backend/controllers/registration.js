@@ -57,8 +57,10 @@ const getRegistrationById = async (req, res, next) => {
       throw new ApiError(404, "Registration is not found");
     }
 
+    const expirationTime = +process.env.TOKEN_EXPIRATION || 3;
     const creationTime = new Date(registration.createdAt);
-    const expired = creationTime.getTime() + 3 * 60 * 60 * 1000 < Date.now();
+    const expired =
+      creationTime.getTime() + expirationTime * 60 * 60 * 1000 < Date.now();
     if (expired) {
       throw new ApiError(400, "Registration expired, please contact hr");
     }

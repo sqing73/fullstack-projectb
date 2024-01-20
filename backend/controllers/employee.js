@@ -1,5 +1,6 @@
 const ApiError = require("../errors/ApiError");
 const EmployeeModel = require("../models/employee");
+const HrModel = require("../models/hr");
 const RegistrationModel = require("../models/registration");
 const jwt = require("jsonwebtoken");
 
@@ -7,10 +8,10 @@ const signin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const existingEmployee = await EmployeeModel.findOne({
-      username: { $eq: username },
+      username,
     });
     if (!existingEmployee) {
-      throw new ApiError(404, "Username does not exist");
+      return next();
     }
 
     const isPasswordCorrect = password === existingEmployee.password;
@@ -25,8 +26,9 @@ const signin = async (req, res, next) => {
       _id: existingEmployee._id,
     };
 
+    const expirationTime = process.env.JWT_EXPIRATION;
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: expirationTime,
     });
 
     return res.status(200).json({
@@ -62,8 +64,10 @@ const signup = async (req, res, next) => {
       throw new ApiError(404, "Registration is not found");
     }
 
+    const expirationTime = +process.env.TOKEN_EXPIRATION || 3;
     const creationTime = new Date(registration.createdAt);
-    const expired = creationTime.getTime() + 3 * 60 * 60 * 1000 < Date.now();
+    const expired =
+      creationTime.getTime() + expirationTime * 60 * 60 * 1000 < Date.now();
     if (expired) {
       throw new ApiError(400, "Registration expired, please contact hr");
     }
@@ -71,6 +75,16 @@ const signup = async (req, res, next) => {
     const tokenCorrect = token === registration.token;
     if (!tokenCorrect) {
       throw new ApiError(400, "Invalid registraion token");
+    }
+
+    let existingHr = await HrModel.findOne({
+      username,
+    });
+    if (existingHr) {
+      throw new ApiError(
+        400,
+        "Username already used, please use another username"
+      );
     }
 
     let existingEmployee = await EmployeeModel.findOne({

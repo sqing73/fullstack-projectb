@@ -4,6 +4,8 @@ const { connectDB, disconnectDB } = require("./db");
 const hrRoutes = require("./routers/hr");
 const employeeRoutes = require("./routers/employee");
 const errorHandler = require("./middlewares/errorHandler");
+const { signin: employeeSignin } = require("./controllers/employee");
+const { signin: hrSignin } = require("./controllers/hr");
 
 const app = express();
 connectDB();
@@ -20,6 +22,8 @@ app.use(express.json());
 app.get("/server-status", (req, res, next) => {
   res.status(200).json({ message: "Server is up and running!" });
 });
+
+app.post("/signin", employeeSignin, hrSignin);
 
 app.use("/hr", hrRoutes);
 app.use("/employee", employeeRoutes);
