@@ -5,6 +5,10 @@ const ApiEror = require("../errors/ApiError");
 
 const requireHrAuth = async (req, res, next) => {
   try {
+    if (!req.headers.authorization) {
+      throw new ApiEror(401, "Unauthorized");
+    }
+
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -23,6 +27,10 @@ const requireHrAuth = async (req, res, next) => {
 
 const requireEmployeeAuth = async (req, res, next) => {
   try {
+    if (!req.headers.authorization) {
+      throw new ApiEror(401, "Unauthorized");
+    }
+
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
