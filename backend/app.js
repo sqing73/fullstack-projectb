@@ -4,6 +4,7 @@ const { connectDB, disconnectDB } = require("./db");
 const hrRoutes = require("./routers/hr");
 const employeeRoutes = require("./routers/employee");
 const employeeProfileRoutes = require('./routers/employeeProfileRoutes'); // Importing the employeeProfileRoutes
+const employeeVisaRoutes = require('./routers/employeeVisaRoutes');
 const errorHandler = require("./middlewares/errorHandler");
 const { signin: employeeSignin } = require("./controllers/employee");
 const { signin: hrSignin } = require("./controllers/hr");
@@ -30,6 +31,7 @@ app.post("/signin", employeeSignin, hrSignin);
 app.use("/hr", hrRoutes);
 app.use("/employee", employeeRoutes);
 app.use("/profiles", employeeProfileRoutes);
+app.use('/employeeVisa', employeeVisaRoutes);
 
 // add routes above this line
 
