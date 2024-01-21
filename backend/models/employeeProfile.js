@@ -9,7 +9,6 @@ const employeeProfileSchema = new mongoose.Schema({
     email: String,
 });
 
-// Renaming the model to 'EmployeeProfile' to avoid conflict with 'Employee' model
 const EmployeeProfile = mongoose.model('EmployeeProfile', employeeProfileSchema, 'employeesProfiles');
 
 
