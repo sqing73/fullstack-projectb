@@ -11,7 +11,7 @@ router.post(
   body("username").isLength({ min: 1 }).withMessage("Enter a valid username "),
   body("password")
     .isLength({ min: 2 })
-    .withMessage("Password must be at least 2 characters"),
+    .withMessage("Password must be at least 2 characters long"),
   signup
 );
 

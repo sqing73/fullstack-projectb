@@ -31,7 +31,7 @@ const addRegistration = async (req, res, next) => {
     if (newRegistration.isNew) {
       throw new ApiError("Registration already exists");
     }
-    const emailContent = `<p>Link: ${process.env.CLIENT_URL}/registration/${newRegistration._id}</p>
+    const emailContent = `<p>Link: ${process.env.CLIENT_URL}/register/${newRegistration._id}</p>
     <p>Token: ${newRegistration.token}</p>
     <p>This token is valid for 3 hours till <b>${newRegistration.createdAt}.</b></p>`;
     await sendEmail(email, emailContent);

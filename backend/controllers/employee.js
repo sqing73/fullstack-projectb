@@ -2,6 +2,7 @@ const ApiError = require("../errors/ApiError");
 const EmployeeModel = require("../models/employee");
 const HrModel = require("../models/hr");
 const RegistrationModel = require("../models/registration");
+const { isValidObjectId } = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const signin = async (req, res, next) => {
@@ -59,6 +60,9 @@ const logout = async (req, res, next) => {
 const signup = async (req, res, next) => {
   try {
     const { username, registrationId, token, password } = req.body;
+    if (!isValidObjectId(registrationId)) {
+      throw new ApiError(404, "Registration is not found");
+    }
     const registration = await RegistrationModel.findById(registrationId);
     if (!registration || registration.status === "inactive") {
       throw new ApiError(404, "Registration is not found");
@@ -93,7 +97,7 @@ const signup = async (req, res, next) => {
           email: registration.email,
         },
         {
-          username: registration.username,
+          username: username,
         },
       ],
     });
