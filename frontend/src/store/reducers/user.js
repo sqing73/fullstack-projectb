@@ -32,7 +32,7 @@ export const signinUser = createAsyncThunk(
       data.password.length < 1
         ? "Please enter a password"
         : data.password.length < 2
-        ? "Password must have at least 2 characters"
+        ? "Password must have at least 2 characters long"
         : null;
     if (usernameError || passwordError) {
       return rejectWithValue({ message: { usernameError, passwordError } });
@@ -57,6 +57,7 @@ const initialUserState = {
   error: {
     username: null,
     password: null,
+    unknown: null,
   },
   status: "idle",
 };
@@ -66,8 +67,7 @@ const userSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     signinInputChange(state, action) {
-      state.error.username = null;
-      state.error.password = null;
+      state.error = { ...initialUserState.error };
     },
     singinInputError(state, { payload }) {
       state.error.username = payload.usernameError;
@@ -81,7 +81,7 @@ const userSlice = createSlice({
         state.user.role = payload?.role || "";
         state.user.email = payload?.email || "";
       })
-      .addCase(signinUser.pending, (state, action) => {
+      .addCase(signinUser.pending, (state) => {
         state.status = "loading";
       })
       .addCase(signinUser.fulfilled, (state, { payload, error }) => {
@@ -95,16 +95,21 @@ const userSlice = createSlice({
         state.status = "idle";
         const errorMessage = payload?.message;
         if (!errorMessage) {
+          state.error.unknown = "Unknwon error, please try again later";
+          console.log("Error not captured");
           return;
         }
         if (typeof errorMessage === "object") {
           state.error.username = errorMessage.usernameError || null;
           state.error.password = errorMessage.passwordError || null;
         } else {
-          if (errorMessage.toLowerCase().includes("password")) {
+          const transformedMessage = errorMessage.toLowerCase();
+          if (transformedMessage.includes("password")) {
             state.error.password = errorMessage;
-          } else {
+          } else if (transformedMessage.includes("username")) {
             state.error.username = errorMessage;
+          } else {
+            state.error.unknown = errorMessage;
           }
         }
       })

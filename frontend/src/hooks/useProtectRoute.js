@@ -1,22 +1,25 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter, usePathname } from "next/navigation";
+import { logoutUser } from "@/store/reducers/user";
 
 const useProtectRoute = () => {
   const user = useSelector((state) => state.user.user);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const router = useRouter();
+  const path = usePathname();
+  const dispatch = useDispatch();
+  const [authenticating, setAuthenticating] = React.useState(true);
 
   React.useEffect(() => {
-    if (!user.username && !user.role) {
-      router.push("/signin");
+    if (!user.username || !user.role || !path.includes(user.role)) {
+      dispatch(logoutUser());
+      router.replace("/signin");
     } else {
-      router.push(`/${user.role}`);
-      setIsAuthenticated(true);
+      setAuthenticating(false);
     }
-  }, [router, user.role, user.username]);
+  }, [dispatch, path, router, user.role, user.username]);
 
-  return isAuthenticated;
+  return authenticating;
 };
 
 export default useProtectRoute;

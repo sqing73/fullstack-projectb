@@ -15,30 +15,44 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/reducers/user";
 
-const pages = ["Products", "Pricing", "Blog"];
+const adminNavs = ["hiring"];
+const employeeNavs = [""];
 
 function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [title, setTitle] = React.useState("WELCOME");
+  const [navs, setNavs] = React.useState([]);
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const router = useRouter();
 
   React.useEffect(() => {
     setTitle(() => user.role?.toUpperCase() || "WELCOME");
+    setNavs(() => {
+      if (user.role === "hr") {
+        return [...adminNavs];
+      } else if (user.role === "employee") {
+        return [...employeeNavs];
+      }
+      return [];
+    });
   }, [user.role]);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
+  // const handleOpenNavMenu = (event) => {
+  //   setAnchorElNav(event.currentTarget);
+  // };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  // const handleCloseNavMenu = () => {
+  //   setAnchorElNav(null);
+  // };
 
   const handleLogout = () => {
     dispatch(logoutUser());
     router.push("/signin");
+  };
+
+  const handleNav = (path) => {
+    router.push(`/${user.role}/${path}`);
   };
 
   return (
@@ -63,7 +77,7 @@ function Header() {
             {title}
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          {/* <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -98,7 +112,7 @@ function Header() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box> */}
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
@@ -119,18 +133,18 @@ function Header() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {navs.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                onClick={() => handleNav(page)}
+                sx={{ color: "white", display: "block" }}
               >
                 {page}
               </Button>
             ))}
             {title !== "WELCOME" && (
               <Button
-                sx={{ ml: "auto", color: "white", my: 2 }}
+                sx={{ ml: "auto", color: "white" }}
                 onClick={handleLogout}
               >
                 Logout
