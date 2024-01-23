@@ -1,72 +1,392 @@
 [
     {
-        "name": "John Doe",
-        "ssn": "123-45-6789",
-        "workAuthorizationTitle": "Permanent Resident",
-        "phoneNumber": "555-1234",
-        "email": "johndoe@example.com"
+        "name": {
+            "first": "Person5",
+            "last": "Surname5",
+            "middle": "C",
+            "preferred": "Ally"
+        },
+        "profilePicture": "alice_baker.jpg",
+        "address": {
+            "building": "789",
+            "street": "Pine Street",
+            "city": "Lakewood",
+            "state": "TX",
+            "zip": "75984"
+        },
+        "phoneNumbers": {
+            "cell": "555-456-7805",
+            "work": "555-654-3205"
+        },
+        "email": "alice.baker@example.com",
+        "personalInfo": {
+            "ssn": "987-65-4305",
+            "dob": "1995-05-25",
+            "gender": "female"
+        },
+        "residencyStatus": {
+            "isPermanentResidentOrCitizen": true,
+            "status": "Citizen"
+        },
+        "workAuthorization": null,
+        "applicationStatus": {
+            "OPTReceipt": {
+                "status": "approved",
+                "message": "Your OPT Receipt has been approved"
+            },
+            "OPTEAD": {
+                "status": "approved",
+                "message": "Your OPT EAD is in place"
+            },
+            "I20": {
+                "status": "approved",
+                "message": "Your I-20 has been verified"
+            },
+            "I983": {
+                "documents": {
+                    "emptyTemplate": "i983_empty_template.pdf",
+                    "sampleTemplate": "i983_sample_template.pdf"
+                },
+                "status": "completed",
+                "message": "Your I-983 has been approved and filed",
+                "uploadButton": "Upload additional documents here"
+            }
+        },
+        "inProgress": "no",
+        "nextStep": "No further action required",
+        "reference": {
+            "name": {
+                "first": "RefPerson5",
+                "last": "RefSurname5",
+                "middle": "E"
+            },
+            "phone": "555-123-4505",
+            "email": "refperson5.refsurname5@example.com",
+            "relationship": "Previous supervisor"
+        },
+        "emergencyContacts": [
+            {
+                "name": {
+                    "first": "EmerPerson5",
+                    "last": "EmerSurname5",
+                    "middle": "F"
+                },
+                "phone": "555-987-6505",
+                "email": "emerp5.s5@example.com",
+                "relationship": "Mother"
+            }
+        ]
     },
     {
-        "name": "Jane Smith",
-        "ssn": "987-65-4321",
-        "workAuthorizationTitle": "H1B Visa Holder",
-        "phoneNumber": "555-5678",
-        "email": "janesmith@example.com"
+        "name": {
+            "first": "Person5",
+            "last": "Surname5",
+            "middle": "C",
+            "preferred": "Ally"
+        },
+        "profilePicture": "alice_baker.jpg",
+        "address": {
+            "building": "789",
+            "street": "Pine Street",
+            "city": "Lakewood",
+            "state": "TX",
+            "zip": "75984"
+        },
+        "phoneNumbers": {
+            "cell": "555-456-7805",
+            "work": "555-654-3205"
+        },
+        "email": "person2.surname2@example.com",
+        "personalInfo": {
+            "ssn": "987-65-4305",
+            "dob": "1995-05-25",
+            "gender": "female"
+        },
+        "residencyStatus": {
+            "isPermanentResidentOrCitizen": true,
+            "status": "Citizen"
+        },
+        "workAuthorization": null,
+        "applicationStatus": {
+            "OPTReceipt": {
+                "status": "approved",
+                "message": "Your OPT Receipt has been approved"
+            },
+            "OPTEAD": {
+                "status": "approved",
+                "message": "Your OPT EAD is in place"
+            },
+            "I20": {
+                "status": "approved",
+                "message": "Your I-20 has been verified"
+            },
+            "I983": {
+                "documents": {
+                    "emptyTemplate": "i983_empty_template.pdf",
+                    "sampleTemplate": "i983_sample_template.pdf"
+                },
+                "status": "completed",
+                "message": "Your I-983 has been approved and filed",
+                "uploadButton": "Upload additional documents here"
+            }
+        },
+        "inProgress": "no",
+        "nextStep": "No further action required",
+        "reference": {
+            "name": {
+                "first": "RefPerson5",
+                "last": "RefSurname5",
+                "middle": "E"
+            },
+            "phone": "555-123-4505",
+            "email": "refperson5.refsurname5@example.com",
+            "relationship": "Previous supervisor"
+        },
+        "emergencyContacts": [
+            {
+                "name": {
+                    "first": "EmerPerson5",
+                    "last": "EmerSurname5",
+                    "middle": "F"
+                },
+                "phone": "555-987-6505",
+                "email": "emerp5.s5@example.com",
+                "relationship": "Mother"
+            }
+        ]
     },
     {
-        "name": "Alice Johnson",
-        "ssn": "234-56-7890",
-        "workAuthorizationTitle": "Citizen",
-        "phoneNumber": "555-8765",
-        "email": "alicejohnson@example.com"
+        "name": {
+            "first": "Person5",
+            "last": "Surname5",
+            "middle": "C",
+            "preferred": "Ally"
+        },
+        "profilePicture": "alice_baker.jpg",
+        "address": {
+            "building": "789",
+            "street": "Pine Street",
+            "city": "Lakewood",
+            "state": "TX",
+            "zip": "75984"
+        },
+        "phoneNumbers": {
+            "cell": "555-456-7805",
+            "work": "555-654-3205"
+        },
+        "email": "person3.surname3@example.com",
+        "personalInfo": {
+            "ssn": "987-65-4305",
+            "dob": "1995-05-25",
+            "gender": "female"
+        },
+        "residencyStatus": {
+            "isPermanentResidentOrCitizen": true,
+            "status": "Citizen"
+        },
+        "workAuthorization": null,
+        "applicationStatus": {
+            "OPTReceipt": {
+                "status": "approved",
+                "message": "Your OPT Receipt has been approved"
+            },
+            "OPTEAD": {
+                "status": "approved",
+                "message": "Your OPT EAD is in place"
+            },
+            "I20": {
+                "status": "approved",
+                "message": "Your I-20 has been verified"
+            },
+            "I983": {
+                "documents": {
+                    "emptyTemplate": "i983_empty_template.pdf",
+                    "sampleTemplate": "i983_sample_template.pdf"
+                },
+                "status": "completed",
+                "message": "Your I-983 has been approved and filed",
+                "uploadButton": "Upload additional documents here"
+            }
+        },
+        "inProgress": "no",
+        "nextStep": "No further action required",
+        "reference": {
+            "name": {
+                "first": "RefPerson5",
+                "last": "RefSurname5",
+                "middle": "E"
+            },
+            "phone": "555-123-4505",
+            "email": "refperson5.refsurname5@example.com",
+            "relationship": "Previous supervisor"
+        },
+        "emergencyContacts": [
+            {
+                "name": {
+                    "first": "EmerPerson5",
+                    "last": "EmerSurname5",
+                    "middle": "F"
+                },
+                "phone": "555-987-6505",
+                "email": "emerp5.s5@example.com",
+                "relationship": "Mother"
+            }
+        ]
     },
     {
-        "name": "Bob Williams",
-        "ssn": "345-67-8901",
-        "workAuthorizationTitle": "Work Visa",
-        "phoneNumber": "555-4321",
-        "email": "bobwilliams@example.com"
+        "name": {
+            "first": "Person5",
+            "last": "Surname5",
+            "middle": "C",
+            "preferred": "Ally"
+        },
+        "profilePicture": "alice_baker.jpg",
+        "address": {
+            "building": "789",
+            "street": "Pine Street",
+            "city": "Lakewood",
+            "state": "TX",
+            "zip": "75984"
+        },
+        "phoneNumbers": {
+            "cell": "555-456-7805",
+            "work": "555-654-3205"
+        },
+        "email": "person4.surname4@example.com",
+        "personalInfo": {
+            "ssn": "987-65-4305",
+            "dob": "1995-05-25",
+            "gender": "female"
+        },
+        "residencyStatus": {
+            "isPermanentResidentOrCitizen": true,
+            "status": "Citizen"
+        },
+        "workAuthorization": null,
+        "applicationStatus": {
+            "OPTReceipt": {
+                "status": "approved",
+                "message": "Your OPT Receipt has been approved"
+            },
+            "OPTEAD": {
+                "status": "approved",
+                "message": "Your OPT EAD is in place"
+            },
+            "I20": {
+                "status": "approved",
+                "message": "Your I-20 has been verified"
+            },
+            "I983": {
+                "documents": {
+                    "emptyTemplate": "i983_empty_template.pdf",
+                    "sampleTemplate": "i983_sample_template.pdf"
+                },
+                "status": "completed",
+                "message": "Your I-983 has been approved and filed",
+                "uploadButton": "Upload additional documents here"
+            }
+        },
+        "inProgress": "no",
+        "nextStep": "No further action required",
+        "reference": {
+            "name": {
+                "first": "RefPerson5",
+                "last": "RefSurname5",
+                "middle": "E"
+            },
+            "phone": "555-123-4505",
+            "email": "refperson5.refsurname5@example.com",
+            "relationship": "Previous supervisor"
+        },
+        "emergencyContacts": [
+            {
+                "name": {
+                    "first": "EmerPerson5",
+                    "last": "EmerSurname5",
+                    "middle": "F"
+                },
+                "phone": "555-987-6505",
+                "email": "emerp5.s5@example.com",
+                "relationship": "Mother"
+            }
+        ]
     },
     {
-        "name": "Carol Thomas",
-        "ssn": "456-78-9012",
-        "workAuthorizationTitle": "Permanent Resident",
-        "phoneNumber": "555-6789",
-        "email": "carolthomas@example.com"
-    },
-    {
-        "name": "David Wilson",
-        "ssn": "567-89-0123",
-        "workAuthorizationTitle": "Citizen",
-        "phoneNumber": "555-3456",
-        "email": "davidwilson@example.com"
-    },
-    {
-        "name": "Eve Brown",
-        "ssn": "678-90-1234",
-        "workAuthorizationTitle": "H1B Visa Holder",
-        "phoneNumber": "555-7890",
-        "email": "evebrown@example.com"
-    },
-    {
-        "name": "Frank Jones",
-        "ssn": "789-01-2345",
-        "workAuthorizationTitle": "Work Visa",
-        "phoneNumber": "555-6543",
-        "email": "frankjones@example.com"
-    },
-    {
-        "name": "Grace Miller",
-        "ssn": "890-12-3456",
-        "workAuthorizationTitle": "Permanent Resident",
-        "phoneNumber": "555-0987",
-        "email": "gracemiller@example.com"
-    },
-    {
-        "name": "Henry Davis",
-        "ssn": "901-23-4567",
-        "workAuthorizationTitle": "Citizen",
-        "phoneNumber": "555-5674",
-        "email": "henrydavis@example.com"
+        "name": {
+            "first": "Person5",
+            "last": "Surname5",
+            "middle": "C",
+            "preferred": "Ally"
+        },
+        "profilePicture": "alice_baker.jpg",
+        "address": {
+            "building": "789",
+            "street": "Pine Street",
+            "city": "Lakewood",
+            "state": "TX",
+            "zip": "75984"
+        },
+        "phoneNumbers": {
+            "cell": "555-456-7805",
+            "work": "555-654-3205"
+        },
+        "email": "person5.surname5@example.com",
+        "personalInfo": {
+            "ssn": "987-65-4305",
+            "dob": "1995-05-25",
+            "gender": "female"
+        },
+        "residencyStatus": {
+            "isPermanentResidentOrCitizen": true,
+            "status": "Citizen"
+        },
+        "workAuthorization": null,
+        "applicationStatus": {
+            "OPTReceipt": {
+                "status": "approved",
+                "message": "Your OPT Receipt has been approved"
+            },
+            "OPTEAD": {
+                "status": "approved",
+                "message": "Your OPT EAD is in place"
+            },
+            "I20": {
+                "status": "approved",
+                "message": "Your I-20 has been verified"
+            },
+            "I983": {
+                "documents": {
+                    "emptyTemplate": "i983_empty_template.pdf",
+                    "sampleTemplate": "i983_sample_template.pdf"
+                },
+                "status": "completed",
+                "message": "Your I-983 has been approved and filed",
+                "uploadButton": "Upload additional documents here"
+            }
+        },
+        "inProgress": "no",
+        "nextStep": "No further action required",
+        "reference": {
+            "name": {
+                "first": "RefPerson5",
+                "last": "RefSurname5",
+                "middle": "E"
+            },
+            "phone": "555-123-4505",
+            "email": "refperson5.refsurname5@example.com",
+            "relationship": "Previous supervisor"
+        },
+        "emergencyContacts": [
+            {
+                "name": {
+                    "first": "EmerPerson5",
+                    "last": "EmerSurname5",
+                    "middle": "F"
+                },
+                "phone": "555-987-6505",
+                "email": "emerp5.s5@example.com",
+                "relationship": "Mother"
+            }
+        ]
     }
 ]

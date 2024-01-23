@@ -2,7 +2,8 @@ const express = require('express');
 const { body } = require("express-validator");
 const { signin, logout, signup } = require("../controllers/employee");
 const { requireEmployeeAuth } = require("../middlewares/auth");
-const employeeVisaController = require('../controllers/employeeVisaController');
+const employeeApplicationController = require('../controllers/employeeApplicationController'); 
+
 
 const router = require("express").Router();
 
@@ -20,6 +21,6 @@ router.post(
 router.use(requireEmployeeAuth);
 
 router.post("/logout", logout);
-router.get('/visaStatus', employeeVisaController.getEmployeeVisaInfo);
+router.get('/applicationStatus', employeeApplicationController.getEmployeeApplicationInfo);
 
 module.exports = router;
