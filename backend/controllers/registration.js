@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const ApiError = require("../errors/ApiError");
 const RegistraionModel = require("../models/registration");
+const EmployeeModel = require("../models/employee");
 const generateRandomString = require("../utils/randomString");
 const sendEmail = require("../utils/sendEmail");
 
@@ -18,7 +19,14 @@ const addRegistration = async (req, res, next) => {
       email,
     });
     if (existingRegistration) {
-      throw new ApiError(400, "Email already exists");
+      throw new ApiError(400, "Email already exists in registrations");
+    }
+
+    const existingEmployee = await EmployeeModel.findOne({
+      email,
+    });
+    if (existingEmployee) {
+      throw new ApiError(400, "Email already exists in employees");
     }
 
     const newRegistration = new RegistraionModel({
@@ -31,7 +39,10 @@ const addRegistration = async (req, res, next) => {
     if (newRegistration.isNew) {
       throw new ApiError("Registration already exists");
     }
-    const emailContent = `<p>Link: ${process.env.CLIENT_URL}/register/${newRegistration._id}</p>
+    const link = `${process.env.CLIENT_URL}/register/${newRegistration._id}`;
+    const emailContent = `<h2>Hi, ${employee}</h2>
+    <p>Please use the link and token below to register your employee account and complete onboarding application</p>
+    <p>link: <a href="${link}">${link}</a></p>
     <p>Token: ${newRegistration.token}</p>
     <p>This token is valid for 3 hours till <b>${newRegistration.createdAt}.</b></p>`;
     await sendEmail(email, emailContent);
@@ -40,7 +51,7 @@ const addRegistration = async (req, res, next) => {
       registration: {
         _id: newRegistration._id,
         email: newRegistration.email,
-        employee: newRegistration.employeeName,
+        employeeName: newRegistration.employeeName,
         status: newRegistration.status,
       },
     });
@@ -51,31 +62,18 @@ const addRegistration = async (req, res, next) => {
 
 const getRegistrationById = async (req, res, next) => {
   try {
-    const { registrationId, token } = req.body;
+    const { registrationId } = req.body;
+    if (!registrationId) {
+      const registrations = await RegistraionModel.find({})
+        .select("-token")
+        .sort({ createdAt: -1 });
+      return res.status(200).json({
+        registrations,
+      });
+    }
     const registration = await RegistraionModel.findById(registrationId);
-    if (!registration || registration.status === "inactive") {
-      throw new ApiError(404, "Registration is not found");
-    }
 
-    const expirationTime = +process.env.TOKEN_EXPIRATION || 3;
-    const creationTime = new Date(registration.createdAt);
-    const expired =
-      creationTime.getTime() + expirationTime * 60 * 60 * 1000 < Date.now();
-    if (expired) {
-      throw new ApiError(400, "Registration expired, please contact hr");
-    }
-    let resMessage;
-    if (token !== undefined) {
-      const tokenCorrect = token === registration.token;
-      if (!tokenCorrect) {
-        throw new ApiError(400, "Invalid registraion token");
-      } else {
-        resMessage = "Registration token correct";
-      }
-    }
-
-    res.status(200).json({
-      message: resMessage,
+    return res.status(200).json({
       registration: {
         _id: registration._id,
         email: registration.email,
