@@ -41,7 +41,7 @@ const RegistrationContent = () => {
   const [fetched, setFetched] = React.useState(false);
 
   React.useEffect(() => {
-    if (!fetched) {
+    if (!fetched && registrations.length === 0) {
       dispatch(fetchRegistrations());
     }
 
