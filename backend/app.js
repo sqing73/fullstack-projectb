@@ -18,7 +18,11 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-
+app.use("/assets/userFiles", express.static(__dirname + "/assets/userFiles"));
+app.use(
+  "/assets/userAvatars",
+  express.static(__dirname + "/assets/userAvatars")
+);
 
 app.get("/server-status", (req, res, next) => {
   res.status(200).json({ message: "Server is up and running!" });
