@@ -34,6 +34,7 @@ ListItemLink.propTypes = {
   to: PropTypes.string.isRequired,
 };
 
+// @TODO responsive
 const SideMenu = (props) => {
   const { username } = props;
   const [search, setSearch] = useState("");
