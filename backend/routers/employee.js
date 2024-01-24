@@ -23,4 +23,8 @@ router.use(requireEmployeeAuth);
 router.post("/logout", logout);
 router.get('/applicationStatus', employeeApplicationController.getEmployeeApplicationInfo);
 
+router.post("/api/application/", employeeApplicationController.createEmployeeApplication)
+router.get('/api/application/:id', employeeApplicationController.getEmployeeApplication);
+router.put('/api/application/:id', employeeApplicationController.modifyEmployeeApplication);
+
 module.exports = router;
