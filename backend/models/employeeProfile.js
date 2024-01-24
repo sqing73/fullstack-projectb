@@ -15,7 +15,7 @@ const employeeProfileSchema = new mongoose.Schema({
     },
     residencyStatus: {
         isPermanentResidentOrCitizen: Boolean,
-        status: String  // e.g., 'Citizen', 'Permanent Resident', etc.
+        status: String,  // e.g., 'Citizen', 'Permanent Resident', etc.
         // ... other residency status fields ...
     },
     phoneNumbers: {
@@ -33,6 +33,10 @@ const employeeProfileSchema = new mongoose.Schema({
     },
     workAuthorization: {
         // Define work authorization fields if needed
+        type: String, // H1-B, L2, F1(CPT/OPT), H4, Other
+        proof: String, // URL link to pdf for F1, visa title for other
+        start: Date,
+        end: Date,
     },
     applicationStatus: {
         OPTReceipt: {
@@ -57,6 +61,15 @@ const employeeProfileSchema = new mongoose.Schema({
             uploadButton: String
         }
         // ... other application status fields if needed ...
+    },
+    reference: {
+        fname: String,
+        lname: String,
+        mname: String,
+        pname: String,
+        phone: String,
+        email: String,
+        relationship: String,
     },
     inProgress: String,  // If you want to track if the profile is in progress
     nextStep: String,  // Next step in the application or profile process
