@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
+import { apiWithAuth } from "@/utils/api";
+
 import {
   Button,
   TextField,
@@ -10,11 +12,13 @@ import {
   FormControl,
 } from "@mui/material";
 import SideMenu from "@/shared/nav";
+import { useDispatch } from "react-redux";
 export default function Page({ params }) {
   // init application from server / redux
   const { id } = params;
   const readOnly = false;
-  
+  const path = `/application/${id}`;
+  const api = apiWithAuth(path);
   const [inputs, setInputs] = useState({
     fname: "", // required
     lname: "", // required
@@ -70,11 +74,52 @@ export default function Page({ params }) {
       }));
     }
   };
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
-    console.log("submit:", inputs);
+    const state = {
+      name: {
+        first: inputs.fname ?? "",
+        last: inputs.lname ?? "",
+        middle: inputs.mname ?? "",
+        preferred: inputs.pname ?? "",
+      },
+      personalInfo: {
+        ssn: inputs.ssn ?? "",
+        dob: inputs.dob ?? "2024-01-01",
+        gender: inputs.gender ?? "",
+      },
+      residencyStatus: {
+        status: inputs.citizen ?? "",
+      },
+      phoneNumbers: {
+        cell: inputs.cell ?? "",
+      },
+      email: inputs.email ?? "",
+      profilePicture: inputs.profilePicture ?? "",
+      address: inputs.address ?? "",
+      workAuthorization: inputs.workAuthorization ?? {
+        type: "",
+        proof: "",
+        start: "2024-01-01",
+        end: "2024-01-01",
+      },
+      reference: inputs.reference ?? {
+        fname: "",
+        lname: "",
+        mname: "",
+        pname: "",
+        phone: "",
+        email: "",
+        relationship: "",
+      },
+    }
+    dispatch(setApplicationInfo({...state}));
+    api.post(path, state);
+    // @TODO redirect to view application
+    // console.log("submit:", inputs);
   };
   // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
-  // @TODO state workauth gender type
   return (
     <div style={{ display: "flex" }}>
       <SideMenu username="Kyrios" />
