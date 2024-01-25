@@ -1,7 +1,6 @@
-// hrApplicationStatus.js
 const mongoose = require('mongoose');
 
-const hrApplicationStatusSchema = new mongoose.Schema({
+const hrVisaStatusSchema = new mongoose.Schema({
     employeeId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Employee', // Reference to Employee model
@@ -11,4 +10,4 @@ const hrApplicationStatusSchema = new mongoose.Schema({
     nextStep: String, // Next step for the employee
 });
 
-module.exports = mongoose.model('HRApplicationStatus', hrApplicationStatusSchema);
+module.exports = mongoose.model('HRApplicationStatus', hrVisanStatusSchema);

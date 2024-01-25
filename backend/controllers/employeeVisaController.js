@@ -1,12 +1,13 @@
-const ApplicationStatus = require("../models/ApplicationStatus");
 const EmployeeProfile = require("../models/employeeProfile"); // Import Employee model
 
 exports.getEmployeeApplicationInfo = async (req, res) => {
   try {
+    console.log('1');
     const employeeId = req.user.id; // Assuming this is provided by user authentication
-    const appStatus = await ApplicationStatus.findOne({
-      employeeId: employeeId,
-    }).populate("employeeId", "name");
+    console.log(req.user.id);
+    const appStatus = await EmployeeProfile.findOne({
+      employeeId: employeeId.toString(),
+    })
 
     if (!appStatus) {
       return res.status(404).send("Application status not found");

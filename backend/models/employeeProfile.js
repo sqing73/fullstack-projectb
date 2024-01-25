@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const employeeProfileSchema = new mongoose.Schema({
+    employeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
     name: {
         first: String,
         last: String,
@@ -38,7 +39,7 @@ const employeeProfileSchema = new mongoose.Schema({
         start: Date,
         end: Date,
     },
-    applicationStatus: {
+    VisaStatus: {
         OPTReceipt: {
             status: String,
             message: String
@@ -68,11 +69,27 @@ const employeeProfileSchema = new mongoose.Schema({
         mname: String,
         phone: String,
         email: String,
-        relationship: String,
+        relationship: String
     },
-    inProgress: String,  // If you want to track if the profile is in progress
-    nextStep: String,  // Next step in the application or profile process
-    // ... any additional fields like references, emergency contacts, etc. ...
+    visaNextStep: String,
+    emergencyContacts: [{
+        fname: String,
+        lname: String,
+        mname: String,
+        phone: String,
+        email: String,
+        relationship: String
+    }],
+    documentSummary: {
+        profilePicture: String,
+        driverLicense: String,
+        workAuthorization: {
+            OPTReceipt: String,
+            OPTEAD: String,
+            I983: String,
+            I20: String
+        }
+    }
 });
 
 const EmployeeProfile = mongoose.model('EmployeeProfile', employeeProfileSchema, 'employeesProfiles');

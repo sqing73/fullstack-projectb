@@ -1,6 +1,6 @@
 const express = require("express");
 const employeeProfileController = require("../controllers/employeeProfileController");
-const hrApplicationController = require("../controllers/hrApplicationController");
+const hrVisaController = require("../controllers/hrVisaController");
 const { body } = require("express-validator");
 const { signin, logout } = require("../controllers/hr");
 const {
@@ -31,7 +31,7 @@ router.get(
   employeeProfileController.getAllEmployeeProfiles
 );
 router.get(
-  "/applicationStatus",
-  hrApplicationController.getAllEmployeeApplicationInfo
+  "/VisaStatus",
+  hrVisaController.getAllEmployeeApplicationInfo
 );
 module.exports = router;
