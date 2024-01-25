@@ -47,7 +47,8 @@ const initialApplicationState = {
     relationship: "",
   },
   inProgress: "yes", // If you want to track if the profile is in progress
-  nextStep: "HR Review", // Next step in the application or profile process
+  nextStep: "Submit", // Next step in the application or profile process
+  // nextStep values: "Submit" (Need submit, frontend only), "HR Reiew" (Submitted, need review), "No further action required" (Approved), "Resubmit" (Rejected) 
 };
 
 const applicationSlice = createSlice({

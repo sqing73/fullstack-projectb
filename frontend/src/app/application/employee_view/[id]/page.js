@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
 import { apiWithAuth } from "@/utils/api";
-
 import {
   Button,
   TextField,
@@ -12,12 +11,15 @@ import {
   FormControl,
 } from "@mui/material";
 import SideMenu from "@/shared/nav";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { applicationActions } from "@/store/reducers/application";
+
+
 export default function Page({ params }) {
   // init application from server / redux
   const { id } = params;
-  const readOnly = false;
-  const path = `/application/${id}`;
+  let readOnly = false;
+  const path = "/application";
   const api = apiWithAuth(path);
   const [inputs, setInputs] = useState({
     fname: "", // required
@@ -54,6 +56,24 @@ export default function Page({ params }) {
       relationship: "", // required
     },
   });
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      try {
+        const response = await api.get("/");
+        setApplication(response.data); // Assuming the response contains the application data
+        dispatch(applicationActions.setApplicationInfo({...response.data}));
+        if (response.data.nextStep === "Resubmit") {
+            redirect(`/application/employee_view/${id}`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err);
+        redirect(`/application/employee_view/${id}`);
+      }
+    };
+
+    fetchApplication();
+  }, []);
   
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -113,16 +133,17 @@ export default function Page({ params }) {
         email: "",
         relationship: "",
       },
+      nextStep: "HR Review",
     }
-    dispatch(setApplicationInfo({...state}));
-    api.post(path, state);
+    dispatch(applicationActions.setApplicationInfo({...state}));
+    api.post(`/${id}`, state);
     // @TODO redirect to view application
     // console.log("submit:", inputs);
   };
   // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu username="Kyrios" />
+      <SideMenu />
       <Box style={{ padding: "16px" }}>
         <h1>Onboarding Application</h1>
         <p>
