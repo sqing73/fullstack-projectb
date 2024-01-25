@@ -66,7 +66,6 @@ const employeeProfileSchema = new mongoose.Schema({
         fname: String,
         lname: String,
         mname: String,
-        pname: String,
         phone: String,
         email: String,
         relationship: String,
