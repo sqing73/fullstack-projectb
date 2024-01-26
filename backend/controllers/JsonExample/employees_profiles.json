@@ -12,6 +12,148 @@
     "gender": "male"
   },
   "residencyStatus": {
+    "isPermanentResidentOrCitizen": false,
+    "status": "none"
+  },
+  "phoneNumbers": {
+    "cell": "555-123-4567",
+    "work": "555-987-6543"
+  },
+  "email": "johndoe@example.com",
+  "profilePicture": "profile.jpg",
+  "address": {
+    "building": "100",
+    "street": "Main St",
+    "city": "Anytown",
+    "state": "CA",
+    "zip": "12345"
+  },
+  "workAuthorization": {
+    "kind": "H1-B",
+    "proof": "test.pdf",
+    "start": "2023-01-01",
+    "end": "2026-01-01"
+  },
+  "visaStatus": {
+    "OPTreceipt": {
+      "status": "approved",
+      "message": null,
+      "file": "opt-receipt.pdf"
+    },
+    "OPTead": {
+      "status": "approved",
+      "message": null,
+      "file": "opt-ead.pdf"
+    },
+    "I983": {
+      "status": "pending",
+      "message": null,
+      "file": "i983.pdf"
+    },
+    "I20": null
+  },
+  "reference": {
+    "fname": "Alice",
+    "lname": "Smith",
+    "mname": "B",
+    "phone": "555-678-1234",
+    "email": "alice.smith@example.com",
+    "relationship": "Former Colleague"
+  },
+  "visaCurrStep": "I20",
+  "applicationStatus": "approved",
+  "applicationFeedback": null,
+  "emergencyContacts": [
+    {
+      "fname": "Robert",
+      "lname": "Johnson",
+      "mname": "C",
+      "phone": "555-321-9876",
+      "email": "robert.johnson@example.com",
+      "relationship": "Brother"
+    },    
+    {
+      "fname": "Andy",
+      "lname": "Johnson",
+      "mname": "A",
+      "phone": "525-351-9276",
+      "email": "andy@example.com",
+      "relationship": "Father"
+    }
+  ]
+}, 
+{
+  "employeeId": "65b346d6a16cb955e8e0490c",
+  "name": {
+    "first": "James",
+    "last": "Smith",
+    "middle": "Robert",
+    "preferred": "Johnny"
+  },
+  "personalInfo": {
+    "ssn": "123-45-6789",
+    "dob": "1990-01-01",
+    "gender": "male"
+  },
+  "residencyStatus": {
+    "isPermanentResidentOrCitizen": false,
+    "status": "none"
+  },
+  "phoneNumbers": {
+    "cell": "555-123-4567",
+    "work": "555-987-6543"
+  },
+  "email": "johndoe@example.com",
+  "profilePicture": "profile.jpg",
+  "address": {
+    "building": "100",
+    "street": "Main St",
+    "city": "Anytown",
+    "state": "CA",
+    "zip": "12345"
+  },
+  "workAuthorization": {
+    "kind": "H1-B",
+    "proof": "test.pdf",
+    "start": "2023-01-01",
+    "end": "2026-01-01"
+  },
+  "reference": {
+    "fname": "Bob",
+    "lname": "Smith",
+    "mname": "B",
+    "phone": "555-678-1234",
+    "email": "Bob.smith@example.com",
+    "relationship": "Uncle"
+  },
+  "visaCurrStep": "none",
+  "applicationStatus": "rejected",
+  "applicationFeedback": "visa date not valid",
+  "emergencyContacts": [
+    {
+      "fname": "Alice",
+      "lname": "Jones",
+      "mname": "M",
+      "phone": "335-345-8953",
+      "email": "alice.jones@example.com",
+      "relationship": "Sister"
+    }
+  ]
+},
+{
+  "employeeId": "65b349c6a16cb955e8e0490d",
+  "name": {
+    "first": "John",
+    "last": "Doe",
+    "middle": "A",
+    "preferred": "Johnny"
+  },
+  "personalInfo": {
+    "ssn": "123-45-6789",
+    "dob": "1990-01-01",
+    "gender": "male"
+  },
+  "residencyStatus": {
     "isPermanentResidentOrCitizen": true,
     "status": "Citizen"
   },
@@ -28,52 +170,24 @@
     "state": "CA",
     "zip": "12345"
   },
-  "workAuthorization": {
-    "type": "H1-B",
-    "proof": "document.pdf",
-    "start": "2023-01-01",
-    "end": "2026-01-01"
-  },
-  "VisaStatus": {
-    "OPTReceipt": {
-      "status": "pending",
-      "message": "Waiting for HR to approve your OPT Receipt"
-    },
-    "OPTEAD": {
-      "status": "approved",
-      "message": "Please upload a copy of your OPT EAD"
-    },
-    "I20": {
-      "status": "rejected",
-      "message": "Please provide a valid document"
-    },
-    "I983": {
-      "documents": {
-        "emptyTemplate": "http://example.com/path/to/emptytemplate.pdf",
-        "sampleTemplate": "http://example.com/path/to/sampletemplate.pdf"
-      },
-      "status": "pending",
-      "message": "Waiting for HR to approve and sign your I-983",
-      "uploadButton": "Upload Button Placeholder"
-    }
-  },
   "reference": {
-    "fname": "Alice",
+    "fname": "Bob",
     "lname": "Smith",
     "mname": "B",
     "phone": "555-678-1234",
-    "email": "alice.smith@example.com",
-    "relationship": "Former Colleague"
+    "email": "Bob.smith@example.com",
+    "relationship": "Uncle"
   },
-  "visaNextStep": "Complete I-20 submission",
+  "visaCurrStep": "none",
+  "applicationStatus": "approved",
   "emergencyContacts": [
     {
-      "fname": "Robert",
-      "lname": "Johnson",
-      "mname": "C",
-      "phone": "555-321-9876",
-      "email": "robert.johnson@example.com",
-      "relationship": "Brother"
+      "fname": "Alice",
+      "lname": "Jones",
+      "mname": "M",
+      "phone": "335-345-8953",
+      "email": "alice.jones@example.com",
+      "relationship": "Sister"
     }
   ]
 }]

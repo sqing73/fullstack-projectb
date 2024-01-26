@@ -1,25 +1,16 @@
 const EmployeeProfile = require("../models/employeeProfile"); // Import Employee model
 
-// Retrieve visa information for an employee
-exports.getEmployeeVisaInfo = async (req, res) => {
+exports.getVisaStatus = async (req, res) => {
   try {
-    const employeeId = req.user.id;
-    const visaStatus = await EmployeeProfile.findOne({
-      employeeId: employeeId.toString(),
-    }, 'VisaStatus');
-
-    if (!visaStatus) {
-      return res.status(404).send("Visa status not found");
+    await req.user.populate("profile");
+    const profile = req.user.profile;
+    if (!profile || !profile.visaStatus) {
+      return res.status(404).json({ message: "No visa status found" });
     }
-
-    const response = {
-      id: visaStatus._id,
-      name: `${visaStatus.name.first} ${visaStatus.name.last}`,
-      visaStatus: visaStatus.VisaStatus,
-      nextStep: visaStatus.visaNextStep,
-    };
-
-    res.json(response);
+    return res.status(200).json({
+      visaStatus: req.user.profile.visaStatus,
+      visaCurrStep: req.user.profile.visaCurrStep,
+    });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -28,16 +19,17 @@ exports.getEmployeeVisaInfo = async (req, res) => {
 // Create a new visa record for an employee
 exports.createEmployeeVisa = async (req, res) => {
   try {
-    const newVisa = new EmployeeProfile({
+    //TODO: add logic to create new workauthorization and visa status
+    const newEmployeeProfile = new EmployeeProfile({
       ...req.body,
-      visaStatus: {
-        inProgress: "yes",
-        nextStep: "Submit OPTEAD documents",
-      },
+      employeeId: req.user._id,
     });
 
-    const savedVisa = await newVisa.save();
-    res.status(201).json(savedVisa);
+    const savedEmployeeProfile = await newEmployeeProfile.save();
+    req.user.profile = savedEmployeeProfile._id;
+    await req.user.save();
+
+    res.status(201).json(savedEmployer); // Send back the created profile with a 201 Created status
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -46,17 +38,14 @@ exports.createEmployeeVisa = async (req, res) => {
 // Retrieve a specific employee's visa details
 exports.getEmployeeVisa = async (req, res) => {
   try {
-    const employeeId = req.params.id;
-    const employee = await EmployeeProfile.findById(employeeId, "VisaStatus");
-
-    if (!employee) {
-      return res.status(404).send("Employee not found");
+    if (!req.user.profile) {
+      return res.status(404).send("Employee profile not found");
     }
+    const profile = await EmployeeProfile.findById(req.user.profile).select(
+      "-visaStatus -visaCurrStep -workAuthorization"
+    );
 
-    res.json({
-      id: employee._id,
-      visaStatus: employee.VisaStatus,
-    });
+    res.json(profile);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -65,26 +54,19 @@ exports.getEmployeeVisa = async (req, res) => {
 // Modify an existing employee's visa record
 exports.modifyEmployeeVisa = async (req, res) => {
   try {
-    const employeeId = req.params.id;
     const updates = {
       ...req.body,
-      visaStatus: {
-        ...req.body.visaStatus,
-        inProgress: "yes",
-      },
     };
-
-    const updatedEmployee = await EmployeeProfile.findByIdAndUpdate(
-      employeeId,
+//TODO: check if body only contains modifiable fields
+    const updatedProfile = await EmployerProfile.findByIdAndUpdate(
+      req.user.profile,
       updates,
       { new: true }
     );
-
-    if (!updatedEmployee) {
-      return res.status(404).send("Employee not found");
+    if (!profile) {
+      return res.status(404).send("Employer not found");
     }
-
-    res.json(updatedEmployee.VisaStatus);
+    res.json(updatedProfile); // Send back the updated profile
   } catch (error) {
     res.status(500).send(error.message);
   }

@@ -1,5 +1,23 @@
 const mongoose = require("mongoose");
 
+const submissionStatus = new mongoose.Schema({
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+    required: true,
+  },
+});
+
+const visaStep = new mongoose.Schema({
+  step: {
+    status: submissionStatus,
+    file: String,
+    feedback: String,
+    _id: false,
+  },
+});
+
 const employeeProfileSchema = new mongoose.Schema(
   {
     employeeId: {
@@ -16,13 +34,19 @@ const employeeProfileSchema = new mongoose.Schema(
     personalInfo: {
       ssn: String,
       dob: Date, // Assuming Date of Birth is needed
-      gender: String, // Assuming Gender is needed
+      gender: {
+        type: String,
+        enum: ["Male", "Female", "Other"],
+      }, // Assuming Gender is needed
       // ... other personal info fields ...
     },
     residencyStatus: {
-      isPermanentResidentOrCitizen: Boolean,
-      status: String, // e.g., 'Citizen', 'Permanent Resident', etc.
-      // ... other residency status fields ...
+      isPermanentResidentOrCitizen: Boolean, // if no, create new work authorization
+      status: {
+        type: String,
+        enum: ["Citizen", "Green Card", "none"],
+        default: "none",
+      },
     },
     phoneNumbers: {
       cell: String,
@@ -38,38 +62,39 @@ const employeeProfileSchema = new mongoose.Schema(
       zip: String,
     },
     workAuthorization: {
-      // Define work authorization fields if needed
-      kind: String, // H1-B, L2, F1(CPT/OPT), H4, Other
-      proof: String, // URL link to pdf for F1, visa title for other
-      start: Date,
-      end: Date,
+      type: {
+        kind: {
+          type: String,
+          enum: ["H1-B", "L2", "F1(CPT/OPT)", "H4", "Other"],
+        }, // H1-B, L2, F1(CPT/OPT), H4, Other
+        title: { type: String, default: null }, // if kind is other, fill in this field
+        proof: { type: String, default: null }, // if kind is not F1, if f1 fill in the opt receipt in visa status
+        start: Date,
+        end: Date,
+      },
+      default: null,
     },
-    VisaStatus: {
-      OPTReceipt: {
-        status: String,
-        message: String,
-        file: String,
-      },
-      OPTEAD: {
-        status: String,
-        message: String,
-        file: String,
-      },
-      I20: {
-        status: String,
-        message: String,
-        file: String,
-      },
-      I983: {
-        documents: {
-          emptyTemplate: String,
-          sampleTemplate: String,
+    visaStatus: {
+      type: {
+        OPTreceipt: {
+          type: visaStep,
+          default: null,
         },
-        status: String,
-        message: String,
-        uploadButton: String,
+        OPTead: {
+          type: visaStep,
+          default: null,
+        },
+        I20: {
+          type: visaStep,
+          default: null,
+        },
+        I983: {
+          type: visaStep,
+          default: null,
+        },
       },
-      // ... other application status fields if needed ...
+      default: null,
+      _id: false,
     },
     reference: {
       fname: String,
@@ -79,7 +104,6 @@ const employeeProfileSchema = new mongoose.Schema(
       email: String,
       relationship: String,
     },
-    visaNextStep: String,
     emergencyContacts: [
       {
         fname: String,
@@ -90,6 +114,16 @@ const employeeProfileSchema = new mongoose.Schema(
         relationship: String,
       },
     ],
+    visaCurrStep: {
+      type: String,
+      enum: ["none", "OPTreceipt", "OPTead", "I983", "I20", "complete"],
+      default: "none",
+    },
+    applicationStatus: submissionStatus,
+    applicationFeedback: {
+      type: String,
+      default: null,
+    },
   },
   {
     versionKey: false,
