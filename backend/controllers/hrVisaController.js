@@ -1,49 +1,78 @@
-const EmployeeProfile = require('../models/employeeProfile'); // Ensure this path is correct
+const EmployeeProfile = require('../models/employeeProfile');
+const sendEmail = require('../utils/sendEmail');
 
 exports.getAllEmployeeApplicationInfo = async (req, res) => {
     try {
-        // Fetching all employee profiles from the database
         const employeeProfiles = await EmployeeProfile.find({});
+        let responseDetails = [];  // Array to hold the response details
 
-        // Check if employeeProfiles array is empty
         if (employeeProfiles.length === 0) {
             return res.status(404).json({ message: "No employee profiles found" });
         }
 
-        const response = employeeProfiles.map(profile => {
-            // Constructing name
-            const firstName = profile.name?.first || '';
-            const middleName = profile.name?.middle ? profile.name.middle + ' ' : '';
-            const lastName = profile.name?.last || '';
-            const name = `${firstName} ${middleName}${lastName}`.trim();
+        for (const profile of employeeProfiles) {
+            let feedbackMessage = '';
 
-            // Directly accessing each visa status field and extracting their status
-            const optReceiptStatus = profile.VisaStatus?.OPTReceipt?.status || 'Not Available';
-            const optEADStatus = profile.VisaStatus?.OPTEAD?.status || 'Not Available';
-            const i20Status = profile.VisaStatus?.I20?.status || 'Not Available';
-            const i983Status = profile.VisaStatus?.I983?.status || 'Not Available';
+            // Process each visa status step
+            const optReceiptStatus = profile.visaStatus?.OPTreceipt?.status;
+            const optEADStatus = profile.visaStatus?.OPTead?.status;
+            const i983Status = profile.visaStatus?.I983?.status;
+            const i20Status = profile.visaStatus?.I20?.status;
 
-            // Constructing the visa application status string
-            let visaApplicationStatus = [optReceiptStatus, optEADStatus, i20Status, i983Status]
-                .filter(status => status !== 'Not Available')
-                .join(', ');
+            // Generate feedback for each step
+            if (optReceiptStatus) {
+                feedbackMessage += `OPT Receipt: ${generateFeedback(optReceiptStatus, 'OPT EAD')}`;
+            }
+            if (optEADStatus) {
+                feedbackMessage += `OPT EAD: ${generateFeedback(optEADStatus, 'I-983 form')}`;
+            }
+            if (i983Status) {
+                feedbackMessage += `I-983: ${generateFeedback(i983Status, 'I-20')}`;
+            }
+            if (i20Status) {
+                feedbackMessage += `I-20: ${generateFeedback(i20Status, 'all documents have been approved')}`;
+            } else if (profile.visaStatus?.I20 === null) {
+                feedbackMessage += `I-20: Not yet submitted. `;
+            }
 
-            visaApplicationStatus = visaApplicationStatus || 'Status Not Available';
+            // Send email if there is a feedback message
+            if (feedbackMessage) {
+                await sendEmail(profile.email, `<p>${feedbackMessage}</p>`);
+            }
 
-            // Extracting next step
-            const nextStep = profile.visaNextStep || 'Next Step Not Available';
+            // Include name, workAuthorization, and visaCurrStep in the response
+            const name = `${profile.name.first} ${profile.name.last}`;
+            const workAuthorization = profile.workAuthorization;
+            const visaCurrStep = profile.visaCurrStep;
 
-            return {
-                id: profile._id.toString(),
-                name: name,
-                visaApplicationStatus: visaApplicationStatus,
-                nextStep: nextStep
-            };
+            // Add details to the responseDetails array
+            responseDetails.push({
+                name,
+                workAuthorization,
+                visaCurrStep,
+                feedbackSent: feedbackMessage !== ''
+            });
+        }
+
+        res.json({ 
+            message: 'Feedback emails sent successfully',
+            details: responseDetails
         });
-
-        res.json(response);
     } catch (error) {
-        console.error("Error: ", error); // Error logging
+        console.error("Error: ", error);
         res.status(500).send(error.message);
     }
 };
+
+function generateFeedback(status, nextStep) {
+    switch (status) {
+        case 'pending':
+            return `Status: Pending. Waiting for HR to approve your ${nextStep}. `;
+        case 'approved':
+            return `Status: Approved. Please proceed with ${nextStep}. `;
+        case 'rejected':
+            return `Status: Rejected. Please check HR's feedback. `;
+        default:
+            return `Status: ${status}. `;
+    }
+}
