@@ -1,23 +1,22 @@
 const EmployeeProfile = require("../models/employeeProfile"); // Import Employee model
 
-exports.getEmployeeApplicationInfo = async (req, res) => {
+// Retrieve visa information for an employee
+exports.getEmployeeVisaInfo = async (req, res) => {
   try {
-    console.log('1');
-    const employeeId = req.user.id; // Assuming this is provided by user authentication
-    console.log(req.user.id);
-    const appStatus = await EmployeeProfile.findOne({
+    const employeeId = req.user.id;
+    const visaStatus = await EmployeeProfile.findOne({
       employeeId: employeeId.toString(),
-    })
+    }, 'VisaStatus');
 
-    if (!appStatus) {
-      return res.status(404).send("Application status not found");
+    if (!visaStatus) {
+      return res.status(404).send("Visa status not found");
     }
 
     const response = {
-      id: appStatus._id, // ObjectId of the application status record
-      name: `${appStatus.employeeId.name.first} ${appStatus.employeeId.name.last}`, // Full name
-      applicationStatus: appStatus.status, // Application status
-      nextStep: appStatus.nextStep, // Next step in the process
+      id: visaStatus._id,
+      name: `${visaStatus.name.first} ${visaStatus.name.last}`,
+      visaStatus: visaStatus.VisaStatus,
+      nextStep: visaStatus.visaNextStep,
     };
 
     res.json(response);
@@ -26,76 +25,66 @@ exports.getEmployeeApplicationInfo = async (req, res) => {
   }
 };
 
-exports.createEmployeeApplication = async (req, res) => {
+// Create a new visa record for an employee
+exports.createEmployeeVisa = async (req, res) => {
   try {
-    const newEmployer = new EmployerProfile({
+    const newVisa = new EmployeeProfile({
       ...req.body,
-      inProgress: "yes",
-      nextStep: "HR Review",
+      visaStatus: {
+        inProgress: "yes",
+        nextStep: "Submit OPTEAD documents",
+      },
     });
 
-    const savedEmployer = await newEmployer.save();
-    res.status(201).json(savedEmployer); // Send back the created profile with a 201 Created status
+    const savedVisa = await newVisa.save();
+    res.status(201).json(savedVisa);
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
-exports.getEmployeeApplication = async (req, res) => {
+// Retrieve a specific employee's visa details
+exports.getEmployeeVisa = async (req, res) => {
   try {
     const employeeId = req.params.id;
-    const employee = await EmployeeProfile.findById(
-      employeeId,
-      "name personalInfo residencyStatus.status phoneNumbers email profilePicture address workAuthorization reference"
-    );
+    const employee = await EmployeeProfile.findById(employeeId, "VisaStatus");
 
     if (!employee) {
       return res.status(404).send("Employee not found");
     }
 
-    const formattedEmployee = {
+    res.json({
       id: employee._id,
-      fname: employee.name.first,
-      lname: employee.name.last,
-      mname: employee.name.middle,
-      pname: employee.name.preferred,
-      profilePicture: employee.profilePicture,
-      address: employee.address,
-      cell: employee.phoneNumbers.cell,
-      email: employee.email,
-      ssn: employee.personalInfo.ssn,
-      dob: employee.personalInfo.dob,
-      gender: employee.personalInfo.gender,
-      citizen: employee.residencyStatus.status,
-      workAuth: employee.workAuthorization,
-      reference: employee.reference,
-    };
-
-    res.json(formattedEmployee);
+      visaStatus: employee.VisaStatus,
+    });
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
-exports.modifyEmployeeApplication = async (req, res) => {
+// Modify an existing employee's visa record
+exports.modifyEmployeeVisa = async (req, res) => {
   try {
-    const employerId = req.params.id;
+    const employeeId = req.params.id;
     const updates = {
-      // Contains the fields to update
       ...req.body,
-      inProgress: "yes",
+      visaStatus: {
+        ...req.body.visaStatus,
+        inProgress: "yes",
+      },
     };
 
-    const updatedEmployer = await EmployerProfile.findByIdAndUpdate(
-      employerId,
+    const updatedEmployee = await EmployeeProfile.findByIdAndUpdate(
+      employeeId,
       updates,
       { new: true }
     );
-    if (!updatedEmployer) {
-      return res.status(404).send("Employer not found");
+
+    if (!updatedEmployee) {
+      return res.status(404).send("Employee not found");
     }
 
-    res.json(updatedEmployer); // Send back the updated profile
+    res.json(updatedEmployee.VisaStatus);
   } catch (error) {
     res.status(500).send(error.message);
   }

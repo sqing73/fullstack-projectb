@@ -4,7 +4,6 @@ const { signin, logout, signup } = require("../controllers/employee");
 const { requireEmployeeAuth } = require("../middlewares/auth");
 const employeeVisaController = require('../controllers/employeeVisaController'); 
 
-
 const router = require("express").Router();
 
 router.post("/signin", signin);
@@ -21,10 +20,11 @@ router.post(
 router.use(requireEmployeeAuth);
 
 router.post("/logout", logout);
-router.get('/VisaStatus', employeeVisaController.getEmployeeApplicationInfo);
 
-router.post("/api/Visa/", employeeVisaController.createEmployeeApplication)
-router.get('/api/Visa/:id', employeeVisaController.getEmployeeApplication);
-router.put('/api/Visa/:id', employeeVisaController.modifyEmployeeApplication);
+// Update these routes to use the correct function names
+router.get('/VisaStatus', employeeVisaController.getEmployeeVisaInfo); // Updated function name
+router.post("/api/Visa/", employeeVisaController.createEmployeeVisa); // Updated function name
+router.get('/api/Visa/:id', employeeVisaController.getEmployeeVisa); // Updated function name
+router.put('/api/Visa/:id', employeeVisaController.modifyEmployeeVisa); // Updated function name
 
 module.exports = router;
