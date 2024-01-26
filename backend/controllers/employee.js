@@ -32,6 +32,8 @@ const signin = async (req, res, next) => {
       expiresIn: expirationTime,
     });
 
+    await existingEmployee.populate("profile");
+
     return res.status(200).json({
       token,
       user: {
@@ -39,6 +41,7 @@ const signin = async (req, res, next) => {
         username: existingEmployee.username,
         email: existingEmployee.email,
         role: "employee",
+        profile: existingEmployee.profile,
       },
       tokenUpdatedAt: new Date().toLocaleString(),
     });

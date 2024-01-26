@@ -24,6 +24,11 @@ const employeeSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "EmployeeProfile",
+      default: null,
+    },
   },
   {
     versionKey: false,

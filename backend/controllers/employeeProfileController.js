@@ -4,7 +4,7 @@ exports.getAllEmployeeProfiles = async (req, res) => {
   try {
     const employeeProfiles = await EmployeeProfile.find(
       {},
-      "-VisaStatus"
+      "-VisaStatus -visaNextStep"
     );
     // const formattedEmployees = employees.map((emp) => ({
     //   id: emp._id, // Including the ObjectId
