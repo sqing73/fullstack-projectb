@@ -23,9 +23,10 @@ router.post("/logout", logout);
 
 router.get("/visaStatus", employeeVisaController.getVisaStatus);
 
-router
+
+/*router
   .post("/profile", employeeVisaController.createEmployeeApplication)
   .get("/profile", employeeVisaController.getEmployeeApplication)
   .put("/profile", employeeVisaController.modifyEmployeeApplication);
-
+*/
 module.exports = router;
