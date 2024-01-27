@@ -1,78 +1,49 @@
-const EmployeeProfile = require('../models/employeeProfile');
-const sendEmail = require('../utils/sendEmail');
+const EmployeeProfile = require('../models/employeeProfile'); // Ensure this path is correct
 
 exports.getAllEmployeeApplicationInfo = async (req, res) => {
     try {
+        // Fetching all employee profiles from the database
         const employeeProfiles = await EmployeeProfile.find({});
-        let responseDetails = [];  // Array to hold the response details
 
+        // Check if employeeProfiles array is empty
         if (employeeProfiles.length === 0) {
             return res.status(404).json({ message: "No employee profiles found" });
         }
 
-        for (const profile of employeeProfiles) {
-            let feedbackMessage = '';
+        const response = employeeProfiles.map(profile => {
+            // Constructing name
+            const firstName = profile.name?.first || '';
+            const middleName = profile.name?.middle ? profile.name.middle + ' ' : '';
+            const lastName = profile.name?.last || '';
+            const name = `${firstName} ${middleName}${lastName}`.trim();
 
-            // Process each visa status step
-            const optReceiptStatus = profile.visaStatus?.OPTreceipt?.status;
-            const optEADStatus = profile.visaStatus?.OPTead?.status;
-            const i983Status = profile.visaStatus?.I983?.status;
-            const i20Status = profile.visaStatus?.I20?.status;
+            // Extracting work authorization details
+            const workAuthorization = profile.workAuthorization ? {
+                kind: profile.workAuthorization.kind || 'Not Available',
+                title: profile.workAuthorization.title || 'Not Available',
+                proof: profile.workAuthorization.proof || 'Not Available',
+                start: profile.workAuthorization.start ? profile.workAuthorization.start.toDateString() : 'Not Available',
+                end: profile.workAuthorization.end ? profile.workAuthorization.end.toDateString() : 'Not Available'
+            } : 'No Work Authorization Info';
 
-            // Generate feedback for each step
-            if (optReceiptStatus) {
-                feedbackMessage += `OPT Receipt: ${generateFeedback(optReceiptStatus, 'OPT EAD')}`;
-            }
-            if (optEADStatus) {
-                feedbackMessage += `OPT EAD: ${generateFeedback(optEADStatus, 'I-983 form')}`;
-            }
-            if (i983Status) {
-                feedbackMessage += `I-983: ${generateFeedback(i983Status, 'I-20')}`;
-            }
-            if (i20Status) {
-                feedbackMessage += `I-20: ${generateFeedback(i20Status, 'all documents have been approved')}`;
-            } else if (profile.visaStatus?.I20 === null) {
-                feedbackMessage += `I-20: Not yet submitted. `;
-            }
+            // Extracting current visa step
+            const visaCurrStep = profile.visaCurrStep || 'No Current Visa Step';
 
-            // Send email if there is a feedback message
-            if (feedbackMessage) {
-                await sendEmail(profile.email, `<p>${feedbackMessage}</p>`);
-            }
+            // Extracting visa status details
+            const visaStatus = profile.visaStatus || 'No Visa Status Info';
 
-            // Include name, workAuthorization, and visaCurrStep in the response
-            const name = `${profile.name.first} ${profile.name.last}`;
-            const workAuthorization = profile.workAuthorization;
-            const visaCurrStep = profile.visaCurrStep;
-
-            // Add details to the responseDetails array
-            responseDetails.push({
-                name,
-                workAuthorization,
-                visaCurrStep,
-                feedbackSent: feedbackMessage !== ''
-            });
-        }
-
-        res.json({ 
-            message: 'Feedback emails sent successfully',
-            details: responseDetails
+            return {
+                id: profile._id.toString(),
+                name: name,
+                workAuthorization: workAuthorization,
+                visaCurrStep: visaCurrStep,
+                visaStatus: visaStatus // Adding visa status to the response
+            };
         });
+
+        res.json(response);
     } catch (error) {
-        console.error("Error: ", error);
+        console.error("Error: ", error); // Error logging
         res.status(500).send(error.message);
     }
 };
-
-function generateFeedback(status, nextStep) {
-    switch (status) {
-        case 'pending':
-            return `Status: Pending. Waiting for HR to approve your ${nextStep}. `;
-        case 'approved':
-            return `Status: Approved. Please proceed with ${nextStep}. `;
-        case 'rejected':
-            return `Status: Rejected. Please check HR's feedback. `;
-        default:
-            return `Status: ${status}. `;
-    }
-}
