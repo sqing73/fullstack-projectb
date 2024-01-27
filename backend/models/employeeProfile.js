@@ -1,17 +1,13 @@
 const mongoose = require("mongoose");
 
-const submissionStatus = new mongoose.Schema({
-  status: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
-    required: true,
-  },
-});
-
 const visaStep = new mongoose.Schema({
   step: {
-    status: submissionStatus,
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+      required: true,
+    },
     file: String,
     feedback: String,
     _id: false,
@@ -119,7 +115,12 @@ const employeeProfileSchema = new mongoose.Schema(
       enum: ["none", "OPTreceipt", "OPTead", "I983", "I20", "complete"],
       default: "none",
     },
-    applicationStatus: submissionStatus,
+    applicationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+      required: true,
+    },
     applicationFeedback: {
       type: String,
       default: null,

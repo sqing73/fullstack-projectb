@@ -39,19 +39,25 @@
   },
   "visaStatus": {
     "OPTreceipt": {
-      "status": "approved",
-      "message": null,
-      "file": "opt-receipt.pdf"
+      "step": {
+        "status": "approved",
+        "feedback": null,
+        "file": "opt-receipt.pdf"
+      }
     },
     "OPTead": {
-      "status": "approved",
-      "message": null,
-      "file": "opt-ead.pdf"
+      "step": {
+        "status": "approved",
+        "feedback": null,
+        "file": "opt-ead.pdf"
+      }
     },
     "I983": {
-      "status": "pending",
-      "message": null,
-      "file": "i983.pdf"
+      "step": {
+        "status": "rejected",
+        "feedback": "file cannot open",
+        "file": "i983.pdf"
+      }
     },
     "I20": null
   },
