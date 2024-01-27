@@ -3,6 +3,15 @@ const { body } = require("express-validator");
 const { signin, logout, signup } = require("../controllers/employee");
 const { requireEmployeeAuth } = require("../middlewares/auth");
 const employeeVisaController = require("../controllers/employeeVisaController");
+const {
+  imageUpload,
+  documentUpload,
+  fileAuthorization,
+} = require("../middlewares/employeeFile");
+const {
+  fileUploadHandler,
+  fileServeHandler,
+} = require("../controllers/employeeFileController");
 
 const router = require("express").Router();
 
@@ -24,8 +33,26 @@ router.post("/logout", logout);
 router.get("/visaStatus", employeeVisaController.getVisaStatus);
 
 router
-  .post("/profile", employeeVisaController.createEmployeeApplication)
-  .get("/profile", employeeVisaController.getEmployeeApplication)
-  .put("/profile", employeeVisaController.modifyEmployeeApplication);
+  .get("/profile", employeeVisaController.getEmployeeProfile)
+  .post("/profile", employeeVisaController.createEmployeeProfile)
+  .put("/profile", employeeVisaController.modifyEmployeeProfile);
+
+router.post(
+  "/assets/userAvatars",
+  imageUpload.single("file"),
+  fileUploadHandler
+);
+router.post(
+  "/assets/userFiles",
+  documentUpload.single("file"),
+  fileUploadHandler
+);
+
+router.get("/assets/userFiles/:filename", fileAuthorization, fileServeHandler);
+router.get(
+  "/assets/userAvatars/:filename",
+  fileAuthorization,
+  fileServeHandler
+);
 
 module.exports = router;

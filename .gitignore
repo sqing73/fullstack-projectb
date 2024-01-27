@@ -132,3 +132,5 @@ dist
 
 #Static files
 assets/
+
+.DS_Store

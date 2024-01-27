@@ -17,7 +17,7 @@ exports.getVisaStatus = async (req, res) => {
 };
 
 // Create a new visa record for an employee
-exports.createEmployeeVisa = async (req, res) => {
+exports.createEmployeeProfile = async (req, res) => {
   try {
     //TODO: add logic to create new workauthorization and visa status
     const newEmployeeProfile = new EmployeeProfile({
@@ -36,7 +36,7 @@ exports.createEmployeeVisa = async (req, res) => {
 };
 
 // Retrieve a specific employee's visa details
-exports.getEmployeeVisa = async (req, res) => {
+exports.getEmployeeProfile = async (req, res) => {
   try {
     if (!req.user.profile) {
       return res.status(404).send("Employee profile not found");
@@ -52,7 +52,7 @@ exports.getEmployeeVisa = async (req, res) => {
 };
 
 // Modify an existing employee's visa record
-exports.modifyEmployeeVisa = async (req, res) => {
+exports.modifyEmployeeProfile = async (req, res) => {
   try {
     const updates = {
       ...req.body,
