@@ -141,4 +141,19 @@ const signup = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, logout, signup };
+const getEmployee = async (req, res, next) => {
+  try {
+    await req.user.populate("profile");
+    res.status(200).json({
+      _id: req.user._id,
+      username: req.user.username,
+      email: req.user.email,
+      role: "employee",
+      profile: req.user.profile,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signin, logout, signup, getEmployee };

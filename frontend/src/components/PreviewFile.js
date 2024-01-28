@@ -5,9 +5,8 @@ import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
-import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import { EMPLOYEE_API } from "@/utils/api";
+import { EMPLOYEE_API, HR_API } from "@/utils/api";
 
 const Link = styled(MuiLink)({
   cursor: "pointer",
@@ -19,7 +18,7 @@ const Link = styled(MuiLink)({
 const dotRe = /\.([a-zA-Z]+)$/;
 const imageFile = /jpeg|jpg|png/;
 
-const PreviewFile = ({ file }) => {
+const PreviewFile = ({ file, hrPreview = false, children }) => {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [url, setUrl] = React.useState(null);
@@ -46,7 +45,8 @@ const PreviewFile = ({ file }) => {
   useEffect(() => {
     const endpoint = isImage ? "/assets/userAvatars" : "/assets/userFiles";
     setLoading(true);
-    EMPLOYEE_API.get(`${endpoint}/${file}`, { responseType: "blob" })
+    const API = hrPreview ? HR_API : EMPLOYEE_API;
+    API.get(`${endpoint}/${file}`, { responseType: "blob" })
       .then((response) => {
         const blobUrl = URL.createObjectURL(response.data);
         setUrl(() => blobUrl);
@@ -68,7 +68,7 @@ const PreviewFile = ({ file }) => {
 
   return (
     <>
-      <Link onClick={handleOpen}>preview</Link>
+      <Link onClick={handleOpen}>{children}</Link>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/reducers/user";
 
-const adminNavs = ["hiring", "employee-profiles"];
+const adminNavs = ["hiring", "employee-profiles", "visa-status"];
 const employeeNavs = ["visa-Status"];
 
 function Header() {

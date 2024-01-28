@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API } from "@/utils/api";
+import { API, EMPLOYEE_API } from "@/utils/api";
 
 export const logoutUser = createAsyncThunk("user/logout", async () => {
   localStorage.removeItem("user");
@@ -13,11 +13,20 @@ export const initializeUser = createAsyncThunk("user/initialize", async () => {
       return {};
     }
     const tokenUpdatedAt = new Date(localUser.tokenUpdatedAt);
-    // leave half an hour
     const tokenEpxired = tokenUpdatedAt + 3 * 24 * 60 * 60 * 1000 < Date.now();
     if (tokenEpxired) {
       localStorage.removeItem("user");
       return {};
+    }
+    if (localUser.user.role === "employee") {
+      try {
+        const res = await EMPLOYEE_API.get("/");
+        localUser.user = { ...res.data, profile: undefined };
+        localStorage.setItem("user", JSON.stringify(localUser));
+        return res.data;
+      } catch (error) {
+        return {};
+      }
     }
     return localUser.user;
   }
@@ -39,6 +48,12 @@ export const signinUser = createAsyncThunk(
     }
     try {
       const res = await API.post("/signin", data);
+      const localUser = { ...res.data };
+      localUser.user = { ...res.data.user };
+      localUser.user.profile = undefined;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(localUser));
+      }
       return res.data;
     } catch (error) {
       return rejectWithValue({
@@ -53,6 +68,7 @@ const initialUserState = {
     username: "",
     role: "",
     email: "",
+    profile: null,
   },
   error: {
     username: null,
@@ -80,6 +96,7 @@ const userSlice = createSlice({
         state.user.username = payload?.username || "";
         state.user.role = payload?.role || "";
         state.user.email = payload?.email || "";
+        state.user.profile = payload?.profile || null;
       })
       .addCase(signinUser.pending, (state) => {
         state.status = "loading";
@@ -89,7 +106,7 @@ const userSlice = createSlice({
         state.user.username = payload.user.username;
         state.user.role = payload.user.role;
         state.user.email = payload.user.email || "";
-        localStorage.setItem("user", JSON.stringify(payload));
+        state.user.profile = payload.user.profile || null;
       })
       .addCase(signinUser.rejected, (state, { payload }) => {
         state.status = "idle";

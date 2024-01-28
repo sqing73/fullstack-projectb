@@ -1,6 +1,11 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { signin, logout, signup } = require("../controllers/employee");
+const {
+  signin,
+  logout,
+  signup,
+  getEmployee,
+} = require("../controllers/employee");
 const { requireEmployeeAuth } = require("../middlewares/auth");
 const employeeVisaController = require("../controllers/employeeVisaController");
 const {
@@ -54,5 +59,7 @@ router.get(
   fileAuthorization,
   fileServeHandler
 );
+
+router.get("/", getEmployee);
 
 module.exports = router;

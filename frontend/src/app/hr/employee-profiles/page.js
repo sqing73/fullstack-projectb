@@ -18,7 +18,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles, profileActions } from "@/store/reducers/profile";
-import ProfielDetail from "./components/ProfileDetail";
+import ProfileDetail from "./components/ProfileDetail";
 
 const style = {
   position: "absolute",
@@ -33,7 +33,7 @@ const Page = () => {
   const profiles = useSelector((state) => state.profile.profiles);
   const error = useSelector((state) => state.profile.error.unknonw);
   const status = useSelector((state) => state.profile.status);
-  const [searchedProfiles, setSearchedProfiles] = React.useState([]);
+  const [searchedProfiles, setSearchedProfiles] = React.useState(profiles);
   const dispatch = useDispatch();
   const [fetched, setFetched] = useState(false);
   const [selectedProfle, setSelectedProfile] = useState({});
@@ -42,9 +42,9 @@ const Page = () => {
   const nameToProfileOptions = React.useMemo(() => {
     const res = [];
     profiles.forEach((profile) => {
-      let searchName = profile.name?.preferred
-        ? `${profile.fullName}, ${profile.name.preferred}`
-        : profile.fullName;
+      let searchName = `${profile.fullname}${
+        profile.name?.preferred ? `, ${profile.name.preferred}` : ""
+      }`;
       res.push(searchName);
     });
     return res;
@@ -52,7 +52,9 @@ const Page = () => {
 
   React.useEffect(() => {
     if (!fetched && profiles.length === 0) {
-      dispatch(fetchProfiles());
+      dispatch(fetchProfiles()).then((data) =>
+        setSearchedProfiles(data.payload)
+      );
     }
     return () => setFetched(true);
   }, [dispatch, fetched, profiles]);
@@ -79,18 +81,20 @@ const Page = () => {
     if (e.key === "Enter") {
       const transformedInput = e.target.value.toLowerCase();
       const searchResult = profiles.filter((profile) => {
-        const transformedFullName = profile.fullName.toLowerCase();
+        const transformedFullName = profile.fullname.toLowerCase();
+        const transformedPrefered = profile.name.preferred
+          ? profile.name.preferred.toLowerCase()
+          : null;
         return (
           transformedFullName.includes(transformedInput) ||
-          transformedInput.includes(transformedFullName)
+          transformedInput.includes(transformedFullName) ||
+          transformedPrefered.includes(transformedInput) ||
+          transformedInput.includes(transformedPrefered)
         );
       });
       setSearchedProfiles(() => searchResult);
     }
   };
-
-  const profilesDisplayed =
-    searchedProfiles.length > 0 ? searchedProfiles : profiles;
 
   return (
     <>
@@ -111,7 +115,7 @@ const Page = () => {
         <Fade in={openDetail}>
           <Card sx={style}>
             {/* <RegistrationGenerate setRegistrationGenerateOpen={setOpen} /> */}
-            <ProfielDetail profile={selectedProfle} />
+            <ProfileDetail profile={selectedProfle} />
           </Card>
         </Fade>
       </Modal>
@@ -142,7 +146,7 @@ const Page = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {profilesDisplayed.map((profile) => (
+              {searchedProfiles.map((profile) => (
                 <TableRow
                   key={profile._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -152,7 +156,7 @@ const Page = () => {
                       sx={{ p: 0 }}
                       onClick={() => handleDetailOpen(profile)}
                     >
-                      {profile.fullName}
+                      {profile.fullname}
                     </Button>
                   </TableCell>
                   <TableCell align="right">
@@ -161,7 +165,7 @@ const Page = () => {
                   <TableCell align="right">
                     {profile.residencyStatus?.isPermanentResidentOrCitizen
                       ? profile.residencyStatus.status
-                      : profile.workAuthorization?.title || "N/A"}
+                      : profile.workAuthorization?.kind || "N/A"}
                   </TableCell>
                   <TableCell align="right">
                     {profile.phoneNumbers.cell}
@@ -173,7 +177,7 @@ const Page = () => {
           </Table>
         </TableContainer>
         {status !== "idle" && <Typography>Loading...</Typography>}
-        {fetched && status === "idle" && profiles.length === 0 && (
+        {fetched && status === "idle" && searchedProfiles.length === 0 && (
           <Typography>No profiles found</Typography>
         )}
       </Box>
