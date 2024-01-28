@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { EMPLOYEE_API } from '../../../utils/api'; 
+import { EMPLOYEE_API } from '../../../utils/api';
 import VisaStatus from './components/VisaStatus';
 
 const VisaStatusPage = () => {
@@ -21,7 +21,7 @@ const VisaStatusPage = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
       <VisaStatus visaStatus={visaData.visaStatus} visaCurrStep={visaData.visaCurrStep} />
     </div>
   );
