@@ -57,7 +57,11 @@ const documentUpload = multer({
 const fileAuthorization = (req, res, next) => {
   const { filename } = req.params;
   const fileOwner = filename.split("-")[0];
-  if (fileOwner !== req.user._id.toString()) {
+  if (
+    filename !== "template1.pdf" &&
+    filename !== "template2.pdf" &&
+    fileOwner !== req.user._id.toString()
+  ) {
     return next(new ApiError(400, "Not authorizated"));
   }
   next();

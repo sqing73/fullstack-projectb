@@ -8,6 +8,7 @@ const {
   getRegistrationById,
 } = require("../controllers/registration");
 const { requireHrAuth } = require("../middlewares/auth");
+const { fileServeHandler } = require("../controllers/employeeFileController");
 
 const router = require("express").Router();
 
@@ -30,8 +31,14 @@ router.get(
   "/employeeProfile",
   employeeProfileController.getAllEmployeeProfiles
 );
+router.get("/VisaStatus", hrVisaController.getAllEmployeeApplicationInfo);
+
+router.get("/assets/userFiles/:filename", fileServeHandler);
+router.get("/assets/userAvatars/:filename", fileServeHandler);
+
 router.get(
-  "/VisaStatus",
-  hrVisaController.getAllEmployeeApplicationInfo
+  "/noProfileEmployee",
+  employeeProfileController.getNotProfiledEmployees
 );
+
 module.exports = router;

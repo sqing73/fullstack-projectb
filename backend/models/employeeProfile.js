@@ -128,8 +128,15 @@ const employeeProfileSchema = new mongoose.Schema(
   },
   {
     versionKey: false,
+    toJSON: { virtuals: true },
   }
 );
+
+employeeProfileSchema.virtual("fullname").get(function () {
+  return `${
+    this.name.first
+  }${this.name.middle ? ` ${this.name.middle}` : ""} ${this.name.last}`;
+});
 
 const EmployeeProfile = mongoose.model(
   "EmployeeProfile",
