@@ -8,10 +8,11 @@ import { EMPLOYEE_API } from "@/utils/api";
 
 const dotRe = /\.([a-zA-Z]+)$/;
 
-const SubmitFile = ({ image = false, ...props }) => {
+const SubmitFile = ({ image = false, onFileName, ...props }) => {
   const endpoint = image ? "/assets/userAvatars" : "/assets/userFiles";
   const [submissionError, setSubmissionError] = React.useState(null);
   const [submitting, setSubmitting] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
   const filetypes = image ? /jpeg|jpg|png/ : /pdf/;
 
   const handleFileChange = async (event) => {
@@ -29,13 +30,16 @@ const SubmitFile = ({ image = false, ...props }) => {
       formData.append("file", file);
       setSubmitting(true);
       try {
-        await EMPLOYEE_API.post(endpoint, formData, {
+        const res = await EMPLOYEE_API.post(endpoint, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+        onFileName && onFileName(res.data.fileName);
         setSubmissionError(false);
+        setSuccess(true);
       } catch (error) {
+        console.log(error);
         setSubmissionError(error.response?.data?.message || "Unknown error");
       }
       setSubmitting(false);
@@ -59,7 +63,10 @@ const SubmitFile = ({ image = false, ...props }) => {
           onChange={handleFileChange}
         />
       </Button>
-      <Typography color="red">{submissionError}</Typography>
+      {success && <Typography color="green">File Submitted</Typography>}
+      {submissionError && (
+        <Typography color="red">{submissionError}</Typography>
+      )}
     </Stack>
   );
 };
