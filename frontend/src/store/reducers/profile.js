@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { HR_API } from "@/utils/api";
+import { logoutUser } from "./user";
 
 export const fetchProfiles = createAsyncThunk(
   "profile/fetch",
@@ -7,17 +8,22 @@ export const fetchProfiles = createAsyncThunk(
     try {
       const res = await HR_API.get("/employeeProfile");
       const profileData = res.data;
-      const profileDataWithFullname = profileData.map((profile) => {
-        return {
-          ...profile,
-          fullName: !profile.name
-            ? ""
-            : profile.name?.middle
-            ? `${profile.name.first} ${profile.name.middle} ${profile.name.last}`
-            : `${profile.name.first} ${profile.name.last}`,
-        };
+      return profileData;
+    } catch (error) {
+      return rejectWithValue({
+        message: error.response?.data.message || error.message,
       });
-      return profileDataWithFullname;
+    }
+  }
+);
+
+export const fectNoProfileEmployees = createAsyncThunk(
+  "profile/fectNoProfileEmployees",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await HR_API.get("/noProfileEmployee");
+      const employees = res.data;
+      return employees;
     } catch (error) {
       return rejectWithValue({
         message: error.response?.data.message || error.message,
@@ -28,6 +34,7 @@ export const fetchProfiles = createAsyncThunk(
 
 const initialProfileState = {
   profiles: [],
+  noProfileEmployees: [],
   error: {
     unknown: null,
   },
@@ -55,6 +62,23 @@ const profileSlice = createSlice({
         state.status = "idle";
         state.error.unknown =
           payload?.message || "Unknown error, please try a again later";
+      })
+      .addCase(fectNoProfileEmployees.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fectNoProfileEmployees.fulfilled, (state, { payload }) => {
+        state.status = "idle";
+        state.noProfileEmployees = payload;
+      })
+      .addCase(fectNoProfileEmployees.rejected, (state, { payload }) => {
+        state.status = "idle";
+        state.error.unknown =
+          payload?.message || "Unknown error, please try a again later";
+      })
+      .addCase(logoutUser.fulfilled, () => {
+        return {
+          ...initialProfileState,
+        };
       });
   },
 });
