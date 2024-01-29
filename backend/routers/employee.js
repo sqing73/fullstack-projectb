@@ -36,6 +36,7 @@ router.use(requireEmployeeAuth);
 router.post("/logout", logout);
 
 router.get("/visaStatus", employeeVisaController.getVisaStatus);
+router.put("/visaStatus", employeeVisaController.updateVisaStatusFile);
 
 router
   .get("/profile", employeeVisaController.getEmployeeProfile)
