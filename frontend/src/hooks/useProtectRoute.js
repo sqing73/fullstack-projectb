@@ -23,7 +23,7 @@ const useProtectRoute = () => {
     } else if (
       rootPath !== "application" &&
       user.role === "employee" &&
-      user.profile === null
+      (user.profile === null || user.profile.applicationStatus !== "approved")
     ) {
       router.replace("/application");
     } else {
