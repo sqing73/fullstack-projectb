@@ -33,7 +33,8 @@ const initialApplicationState = {
   workAuthorization: {
     // Define work authorization fields if needed
     type: "", // H1-B, L2, F1(CPT/OPT), H4, Other
-    proof: "", // URL link to pdf for F1, visa title for other
+    title: "", // for Other
+    proof: "", // URL link to pdf for F1
     start: "2024-01-01",
     end: "2024-01-01",
   },
@@ -41,14 +42,20 @@ const initialApplicationState = {
     fname: "",
     lname: "",
     mname: "",
-    pname: "",
     phone: "",
     email: "",
     relationship: "",
   },
-  inProgress: "yes", // If you want to track if the profile is in progress
-  nextStep: "Submit", // Next step in the application or profile process
-  // nextStep values: "Submit" (Need submit, frontend only), "HR Reiew" (Submitted, need review), "No further action required" (Approved), "Resubmit" (Rejected) 
+  emergencyContacts: {
+    fname: "",
+    lname: "",
+    mname: "",
+    phone: "",
+    email: "",
+    relationship: "",
+  },
+  applicationStatus: "pending", 
+  applicationFeedback: "",
 };
 
 const applicationSlice = createSlice({

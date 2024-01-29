@@ -15,12 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
 
 
-export default function Page({ params }) {
+export default function Page() {
   // init application from server / redux
-  const { id } = params;
-  let readOnly = false;
-  const path = "/application";
+  // const { id } = params;
+  const path = "/profile";
   const api = apiWithAuth(path);
+  let readOnly = false;
+  let nextStep = "No";
   const [inputs, setInputs] = useState({
     fname: "", // required
     lname: "", // required
@@ -42,8 +43,9 @@ export default function Page({ params }) {
     gender: "", // required, f/m/unknown
     citizen: "Green Card", // required, green card/citizen/false
     workAuth: {
-      type: "", // H1-B, L2, F1(CPT/OPT), H4, Other
-      proof: "", // OPT Receipt (file) / visa title
+      kind: "", // H1-B, L2, F1(CPT/OPT), H4, Other
+      title: "", // for Other
+      proof: "", // for F1
       start: "2024-01-01",
       end: "2024-01-01",
     },
@@ -55,15 +57,23 @@ export default function Page({ params }) {
       email: "",
       relationship: "", // required
     },
+    emergencyContacts: {
+      fname: "",
+      lname: "",
+      pname: "",
+      phone: "",
+      email: "",
+      relationship: "",
+    },
   });
 
   useEffect(() => {
     const fetchApplication = async () => {
       try {
         const response = await api.get("/");
-        setApplication(response.data); // Assuming the response contains the application data
+        setInputs(response.data); // Assuming the response contains the application data
         dispatch(applicationActions.setApplicationInfo({...response.data}));
-        if (response.data.nextStep === "Resubmit") {
+        if (response.data.applicationStatus === "rejected") {
             redirect(`/application/employee_view/${id}`);
         }
       } catch (err) {
@@ -117,9 +127,16 @@ export default function Page({ params }) {
       },
       email: inputs.email ?? "",
       profilePicture: inputs.profilePicture ?? "",
-      address: inputs.address ?? "",
+      address: inputs.address ?? {
+        building: "",
+        street: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
       workAuthorization: inputs.workAuthorization ?? {
-        type: "",
+        kind: "",
+        title: "",
         proof: "",
         start: "2024-01-01",
         end: "2024-01-01",
@@ -128,16 +145,23 @@ export default function Page({ params }) {
         fname: "",
         lname: "",
         mname: "",
+        phone: "",
+        email: "",
+        relationship: "",
+      },
+      emergencyContacts: inputs.emergencyContacts ?? {
+        fname: "",
+        lname: "",
         pname: "",
         phone: "",
         email: "",
         relationship: "",
       },
-      nextStep: "HR Review",
+      applicationStatus: "pending",
     }
     dispatch(applicationActions.setApplicationInfo({...state}));
     api.post(`/${id}`, state);
-    // @TODO redirect to view application
+    // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
   };
   // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
@@ -194,7 +218,7 @@ export default function Page({ params }) {
         />
         <TextField
           name="profilePicture"
-          value={inputs.fname}
+          value={inputs.profilePicture}
           label="Profile Picture"
           variant="standard"
           onChange={handleInputChange}
@@ -345,9 +369,9 @@ export default function Page({ params }) {
               readOnly: readOnly,
             }}
           >
-            <MenuItem value={"green card"}>Yes, I have green card</MenuItem>
-            <MenuItem value={"citizen"}>Yes, I am citizen of the U.S.</MenuItem>
-            <MenuItem value={"false"}>No</MenuItem>
+            <MenuItem value={"Green Card"}>Yes, I have green card</MenuItem>
+            <MenuItem value={"Citizen"}>Yes, I am citizen of the U.S.</MenuItem>
+            <MenuItem value={"none"}>No</MenuItem>
           </Select>
         </FormControl>
         <div>
@@ -361,10 +385,10 @@ export default function Page({ params }) {
                 <InputLabel id="wa-select-label">Work Authorization</InputLabel>
                 <Select
                   required
-                  name="workAuth.type"
+                  name="workAuth.kind"
                   labelId="wa-select-label"
                   label="Work Authorization"
-                  value={inputs.workAuth.type}
+                  value={inputs.workAuth.kind}
                   onChange={handleInputChange}
                   inputProps={{
                     readOnly: readOnly,
@@ -372,12 +396,12 @@ export default function Page({ params }) {
                 >
                   <MenuItem value={"H1-B"}>H1-B</MenuItem>
                   <MenuItem value={"L2"}>L2</MenuItem>
-                  <MenuItem value={"F1"}>F1(CPT/OPT)</MenuItem>
+                  <MenuItem value={"F1(CPT/OPT)"}>F1(CPT/OPT)</MenuItem>
                   <MenuItem value={"H4"}>H4</MenuItem>
                   <MenuItem value={"Other"}>Other</MenuItem>
                 </Select>
               </FormControl>
-              {inputs.workAuth.type === "F1" ? (
+              {inputs.workAuth.kind === "F1(OPT/CPT)" ? (
                 <TextField
                   name="workAuth.proof"
                   value={inputs.workAuth.proof}
@@ -388,10 +412,10 @@ export default function Page({ params }) {
                     readOnly: readOnly,
                   }}
                 />
-              ) : inputs.workAuth.type === "Other" ? (
+              ) : inputs.workAuth.kind === "Other" ? (
                 <TextField
-                  name="workAuth.proof"
-                  value={inputs.workAuth.proof}
+                  name="workAuth.title"
+                  value={inputs.workAuth.title}
                   label={"Visa Title"}
                   variant="standard"
                   onChange={handleInputChange}
@@ -490,6 +514,72 @@ export default function Page({ params }) {
           required
           name="reference.relationship"
           value={inputs.reference.relationship}
+          label="Relationship"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+
+<div className="input-section-label">Emergency Contacts</div>
+        <TextField
+          required
+          name="emergencyContacts.fname"
+          value={inputs.emergencyContacts.fname}
+          label="First Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          required
+          name="emergencyContacts.lname"
+          value={inputs.emergencyContacts.lname}
+          label="Last Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          name="emergencyContacts.mname"
+          value={inputs.emergencyContacts.mname}
+          label="Middle Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          name="emergencyContacts.phone"
+          value={inputs.emergencyContacts.phone}
+          label="Phone"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          type="email"
+          name="emergencyContacts.email"
+          value={inputs.emergencyContacts.email}
+          label="Email"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          required
+          name="emergencyContacts.relationship"
+          value={inputs.emergencyContacts.relationship}
           label="Relationship"
           variant="standard"
           onChange={handleInputChange}
