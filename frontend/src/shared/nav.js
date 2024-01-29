@@ -14,6 +14,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 function ListItemLink(props) {
   const { icon, primary, to } = props;
@@ -34,8 +35,11 @@ ListItemLink.propTypes = {
   to: PropTypes.string.isRequired,
 };
 
+// @TODO responsive
 const SideMenu = (props) => {
-  const { username } = props;
+  // props:
+  //  (optional) searchCallback(str): funtion to do search logic
+  const username = useSelector((state) => state.user.user.username) ?? "Guest";
   const [search, setSearch] = useState("");
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
@@ -43,7 +47,9 @@ const SideMenu = (props) => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     console.log("Searching for:", search);
-    // @TODO: API call
+    if (props.searchCallback) {
+      props.searchCallback(search);
+    }
   };
   return (
     <Drawer

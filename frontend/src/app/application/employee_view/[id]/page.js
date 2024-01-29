@@ -1,12 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
-import { Button, TextField } from "@mui/material";
+import { apiWithAuth } from "@/utils/api";
+import {
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import SideMenu from "@/shared/nav";
-export default function Page({ params }) {
+import { useDispatch, useSelector } from "react-redux";
+import { applicationActions } from "@/store/reducers/application";
+
+
+export default function Page() {
   // init application from server / redux
-  const { id } = params;
-  const notEditable = false;
+  // const { id } = params;
+  const path = "/profile";
+  const api = apiWithAuth(path);
+  let readOnly = false;
+  let nextStep = "No";
   const [inputs, setInputs] = useState({
     fname: "", // required
     lname: "", // required
@@ -15,7 +30,7 @@ export default function Page({ params }) {
     profilePicture: "",
     address: {
       // required
-      apt: "",
+      building: "",
       street: "",
       city: "",
       state: "",
@@ -25,11 +40,12 @@ export default function Page({ params }) {
     email: "", // required, init from server
     ssn: "", // required
     dob: "2024-01-01", // required
-    gender: "", // required, f/m/na
+    gender: "", // required, f/m/unknown
     citizen: "Green Card", // required, green card/citizen/false
     workAuth: {
-      type: "", // H1-B, L2, F1(CPT/OPT), H4, Other
-      proof: "", // OPT Receipt (file) / visa title
+      kind: "", // H1-B, L2, F1(CPT/OPT), H4, Other
+      title: "", // for Other
+      proof: "", // for F1
       start: "2024-01-01",
       end: "2024-01-01",
     },
@@ -41,7 +57,34 @@ export default function Page({ params }) {
       email: "",
       relationship: "", // required
     },
+    emergencyContacts: {
+      fname: "",
+      lname: "",
+      pname: "",
+      phone: "",
+      email: "",
+      relationship: "",
+    },
   });
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      try {
+        const response = await api.get("/");
+        setInputs(response.data); // Assuming the response contains the application data
+        dispatch(applicationActions.setApplicationInfo({...response.data}));
+        if (response.data.applicationStatus === "rejected") {
+            redirect(`/application/employee_view/${id}`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err);
+        redirect(`/application/employee_view/${id}`);
+      }
+    };
+
+    fetchApplication();
+  }, []);
+  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
@@ -61,18 +104,74 @@ export default function Page({ params }) {
       }));
     }
   };
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
-    console.log("submit:", inputs)
-  }
-  // application states: unsubmitted(*), pending, approved, rejected(*), *=notEditable
-  // @TODO state workauth gender type
+    const state = {
+      name: {
+        first: inputs.fname ?? "",
+        last: inputs.lname ?? "",
+        middle: inputs.mname ?? "",
+        preferred: inputs.pname ?? "",
+      },
+      personalInfo: {
+        ssn: inputs.ssn ?? "",
+        dob: inputs.dob ?? "2024-01-01",
+        gender: inputs.gender ?? "",
+      },
+      residencyStatus: {
+        status: inputs.citizen ?? "",
+      },
+      phoneNumbers: {
+        cell: inputs.cell ?? "",
+      },
+      email: inputs.email ?? "",
+      profilePicture: inputs.profilePicture ?? "",
+      address: inputs.address ?? {
+        building: "",
+        street: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+      workAuthorization: inputs.workAuthorization ?? {
+        kind: "",
+        title: "",
+        proof: "",
+        start: "2024-01-01",
+        end: "2024-01-01",
+      },
+      reference: inputs.reference ?? {
+        fname: "",
+        lname: "",
+        mname: "",
+        phone: "",
+        email: "",
+        relationship: "",
+      },
+      emergencyContacts: inputs.emergencyContacts ?? {
+        fname: "",
+        lname: "",
+        pname: "",
+        phone: "",
+        email: "",
+        relationship: "",
+      },
+      applicationStatus: "pending",
+    }
+    dispatch(applicationActions.setApplicationInfo({...state}));
+    api.post(`/${id}`, state);
+    // @TODO exception handling, redirect to view application
+    // console.log("submit:", inputs);
+  };
+  // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu username="Kyrios" />
+      <SideMenu />
       <Box style={{ padding: "16px" }}>
         <h1>Onboarding Application</h1>
         <p>
-          Application ID: {id} {notEditable ? "" : "(Read Only)"}
+          Application ID: {id} {readOnly ? "(Read Only)" : ""}
         </p>
         <div className="input-section-label">Personal Information</div>
         <TextField
@@ -83,7 +182,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -94,7 +193,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -104,7 +203,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -114,17 +213,17 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
           name="profilePicture"
-          value={inputs.fname}
+          value={inputs.profilePicture}
           label="Profile Picture"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
 
@@ -136,7 +235,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -148,7 +247,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -159,7 +258,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -171,30 +270,40 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
-        <TextField
-          required
-          name="gender"
-          value={inputs.gender}
-          label="Gender"
+        <FormControl
           variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: notEditable,
-          }}
-        />
-
+          sx={{ m: 1, minWidth: 200 }}
+          size="small"
+        >
+          <InputLabel id="gender-select-label">Gender</InputLabel>
+          <Select
+            required
+            name="gender"
+            labelId="gender-select-label"
+            value={inputs.gender}
+            label="Gender"
+            onChange={handleInputChange}
+            inputProps={{
+              readOnly: readOnly,
+            }}
+          >
+            <MenuItem value={"male"}>Male</MenuItem>
+            <MenuItem value={"female"}>Female</MenuItem>
+            <MenuItem value={"unknown"}>I do not wish to answer</MenuItem>
+          </Select>
+        </FormControl>
         <div className="input-section-label">Address</div>
         <TextField
-          name="address.apt"
-          value={inputs.address.apt}
+          name="address.building"
+          value={inputs.address.building}
           label="Building/Apt #"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -205,7 +314,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -216,7 +325,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -227,7 +336,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -238,50 +347,86 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
 
         <div className="input-section-label">
-          Are you permanent resident or citizen of the U.S?
+          Are you permanent resident or citizen of the U.S.?
         </div>
-        <TextField
-          required
-          name="citizen"
-          value={inputs.citizen}
-          label=""
+        <FormControl
           variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: notEditable,
-          }}
-        />
+          sx={{ m: 1, minWidth: 200 }}
+          size="small"
+        >
+          <Select
+            required
+            name="citizen"
+            label=""
+            value={inputs.citizen}
+            onChange={handleInputChange}
+            inputProps={{
+              readOnly: readOnly,
+            }}
+          >
+            <MenuItem value={"Green Card"}>Yes, I have green card</MenuItem>
+            <MenuItem value={"Citizen"}>Yes, I am citizen of the U.S.</MenuItem>
+            <MenuItem value={"none"}>No</MenuItem>
+          </Select>
+        </FormControl>
         <div>
           {inputs.citizen === "false" ? (
             <div>
-              <TextField
-                required
-                name="workAuth.type"
-                value={inputs.workAuth.type}
-                label="Work Authorization"
+              <FormControl
                 variant="standard"
-                onChange={handleInputChange}
-                InputProps={{
-                  readOnly: notEditable,
-                }}
-              />
-              <TextField
-                name="workAuth.proof"
-                value={inputs.workAuth.proof}
-                label={
-                  inputs.workAuth.type === "F1" ? "OPT Receipt" : "Visa Title"
-                }
-                variant="standard"
-                onChange={handleInputChange}
-                InputProps={{
-                  readOnly: notEditable,
-                }}
-              />
+                sx={{ m: 1, minWidth: 200 }}
+                size="small"
+              >
+                <InputLabel id="wa-select-label">Work Authorization</InputLabel>
+                <Select
+                  required
+                  name="workAuth.kind"
+                  labelId="wa-select-label"
+                  label="Work Authorization"
+                  value={inputs.workAuth.kind}
+                  onChange={handleInputChange}
+                  inputProps={{
+                    readOnly: readOnly,
+                  }}
+                >
+                  <MenuItem value={"H1-B"}>H1-B</MenuItem>
+                  <MenuItem value={"L2"}>L2</MenuItem>
+                  <MenuItem value={"F1(CPT/OPT)"}>F1(CPT/OPT)</MenuItem>
+                  <MenuItem value={"H4"}>H4</MenuItem>
+                  <MenuItem value={"Other"}>Other</MenuItem>
+                </Select>
+              </FormControl>
+              {inputs.workAuth.kind === "F1(OPT/CPT)" ? (
+                <TextField
+                  name="workAuth.proof"
+                  value={inputs.workAuth.proof}
+                  label={"OPT Receipt"}
+                  variant="standard"
+                  onChange={handleInputChange}
+                  InputProps={{
+                    readOnly: readOnly,
+                  }}
+                />
+              ) : inputs.workAuth.kind === "Other" ? (
+                <TextField
+                  name="workAuth.title"
+                  value={inputs.workAuth.title}
+                  label={"Visa Title"}
+                  variant="standard"
+                  onChange={handleInputChange}
+                  InputProps={{
+                    readOnly: readOnly,
+                  }}
+                />
+              ) : (
+                <div></div>
+              )}
+              <div></div>
               <TextField
                 required
                 type="date"
@@ -291,7 +436,7 @@ export default function Page({ params }) {
                 variant="standard"
                 onChange={handleInputChange}
                 InputProps={{
-                  readOnly: notEditable,
+                  readOnly: readOnly,
                 }}
               />
               <TextField
@@ -303,7 +448,7 @@ export default function Page({ params }) {
                 variant="standard"
                 onChange={handleInputChange}
                 InputProps={{
-                  readOnly: notEditable,
+                  readOnly: readOnly,
                 }}
               />
             </div>
@@ -311,9 +456,7 @@ export default function Page({ params }) {
             <div></div>
           )}
         </div>
-        <div className="input-section-label">
-          Reference
-        </div>
+        <div className="input-section-label">Reference</div>
         <TextField
           required
           name="reference.fname"
@@ -322,7 +465,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -333,7 +476,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -343,7 +486,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -353,7 +496,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -364,7 +507,7 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
           }}
         />
         <TextField
@@ -375,16 +518,79 @@ export default function Page({ params }) {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: notEditable,
+            readOnly: readOnly,
+          }}
+        />
+
+<div className="input-section-label">Emergency Contacts</div>
+        <TextField
+          required
+          name="emergencyContacts.fname"
+          value={inputs.emergencyContacts.fname}
+          label="First Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          required
+          name="emergencyContacts.lname"
+          value={inputs.emergencyContacts.lname}
+          label="Last Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          name="emergencyContacts.mname"
+          value={inputs.emergencyContacts.mname}
+          label="Middle Name"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          name="emergencyContacts.phone"
+          value={inputs.emergencyContacts.phone}
+          label="Phone"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          type="email"
+          name="emergencyContacts.email"
+          value={inputs.emergencyContacts.email}
+          label="Email"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
+          }}
+        />
+        <TextField
+          required
+          name="emergencyContacts.relationship"
+          value={inputs.emergencyContacts.relationship}
+          label="Relationship"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly,
           }}
         />
         <div className="input-section-label">
-            <Button
-                variant="contained"
-                onClick={handleSubmit}
-            >
-                    Submit
-            </Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
         </div>
       </Box>
     </div>
