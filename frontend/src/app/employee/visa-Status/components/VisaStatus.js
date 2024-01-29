@@ -1,12 +1,12 @@
 import React from 'react';
 
 const VisaStatus = ({ visaStatus, visaCurrStep }) => {
-    const highlightedSteps = ['OPTreceipt', 'OPTead', 'I983', 'I20']; // Steps to highlight
+    const highlightedSteps = ['OPTreceipt', 'OPTead', 'I983', 'I20']; 
 
     return (
         <div style={{ textAlign: 'center', width: '100%' }}>
             <h2 style={{ 
-                fontSize: highlightedSteps.includes(visaCurrStep) ? '1.5em' : '1em', // Make font larger if current step is highlighted
+                fontSize: highlightedSteps.includes(visaCurrStep) ? '1.5em' : '1em',
                 display: 'inline-block', 
                 padding: '5px' 
             }}>
@@ -19,7 +19,7 @@ const VisaStatus = ({ visaStatus, visaCurrStep }) => {
                         margin: '10px', 
                         padding: '10px', 
                         border: '1px solid #ddd', 
-                        fontSize: highlightedSteps.includes(key) ? '1.2em' : '1em' // Make font larger for highlighted steps
+                        fontSize: highlightedSteps.includes(key) ? '1.2em' : '1em'
                     }}>
                         <h3>{key}</h3>
                         <p>Status: {value?.step?.status || 'N/A'}</p>
