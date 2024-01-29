@@ -31,21 +31,21 @@ const VisaStatusPage = () => {
     setVisaData(prevState => {
       const updatedVisaStatus = { ...prevState.visaStatus };
 
-      if (!updatedVisaStatus[selectedStep]) {
-        updatedVisaStatus[selectedStep] = {
-          step: {
-            status: "Pending",
-            file: fileName,
-            feedback: null
-          }
-        };
-      } else {
+      if (updatedVisaStatus[selectedStep]) {
         updatedVisaStatus[selectedStep] = {
           ...updatedVisaStatus[selectedStep],
           step: {
             ...updatedVisaStatus[selectedStep].step,
-            status: "Pending",
+            status: "pending",
             file: fileName
+          }
+        };
+      } else {
+        updatedVisaStatus[selectedStep] = {
+          step: {
+            status: "pending",
+            file: fileName,
+            feedback: null
           }
         };
       }
@@ -64,11 +64,6 @@ const VisaStatusPage = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
       <VisaStatus visaStatus={visaData.visaStatus} visaCurrStep={visaData.visaCurrStep} />
-
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-        <PreviewFile file="template1.pdf">Empty Template</PreviewFile>
-        <PreviewFile file="template2.pdf">Sample Template</PreviewFile>
-      </div>
 
       <FormControl style={{ margin: '20px', minWidth: 120 }}>
         <InputLabel id="visa-step-select-label">Visa Step</InputLabel>
@@ -94,4 +89,5 @@ const VisaStatusPage = () => {
 };
 
 export default VisaStatusPage;
+
 
