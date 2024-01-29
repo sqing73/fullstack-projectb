@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/reducers/user";
 
 const adminNavs = ["hiring", "employee-profiles", "visa-status"];
-const employeeNavs = [""];
+const employeeNavs = ["visa-Status"];
 
 function Header() {
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
