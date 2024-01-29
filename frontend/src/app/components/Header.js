@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/reducers/user";
 
-const adminNavs = ["hiring"];
+const adminNavs = ["hiring", "employee-profiles", "visa-status"];
 const employeeNavs = [""];
 
 function Header() {
@@ -137,9 +137,9 @@ function Header() {
               <Button
                 key={page}
                 onClick={() => handleNav(page)}
-                sx={{ color: "white", display: "block" }}
+                sx={{ color: "white", display: "block", ml: 3 }}
               >
-                {page}
+                {page.replace("-", " ")}
               </Button>
             ))}
             {title !== "WELCOME" && (

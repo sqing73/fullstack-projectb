@@ -19,7 +19,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-
 app.get("/server-status", (req, res, next) => {
   res.status(200).json({ message: "Server is up and running!" });
 });

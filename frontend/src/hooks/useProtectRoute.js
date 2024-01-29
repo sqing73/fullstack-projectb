@@ -9,15 +9,27 @@ const useProtectRoute = () => {
   const path = usePathname();
   const dispatch = useDispatch();
   const [authenticating, setAuthenticating] = React.useState(true);
+  const rootPath = path.split("/")[1];
 
   React.useEffect(() => {
-    if (!user.username || !user.role || !path.includes(user.role)) {
+    if (
+      !user.username ||
+      !user.role ||
+      (rootPath !== "application" && rootPath !== user.role) ||
+      (rootPath === "application" && user.role === "hr")
+    ) {
       dispatch(logoutUser());
       router.replace("/signin");
+    } else if (
+      rootPath !== "application" &&
+      user.role === "employee" &&
+      (user.profile === null || user.profile.applicationStatus !== "approved")
+    ) {
+      router.replace("/application");
     } else {
       setAuthenticating(false);
     }
-  }, [dispatch, path, router, user.role, user.username]);
+  }, []);
 
   return authenticating;
 };

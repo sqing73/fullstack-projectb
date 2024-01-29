@@ -69,6 +69,7 @@ export const addRegistration = createAsyncThunk(
       const res = await HR_API.post("/registration", data);
       return res.data;
     } catch (error) {
+      console.log(error);
       return rejectWithValue({
         message: error.response?.data.message || error.message,
       });
@@ -78,10 +79,6 @@ export const addRegistration = createAsyncThunk(
 
 const initialRegistrationState = {
   registrations: [],
-  registration: {
-    email: "",
-    token: "",
-  },
   error: {
     username: null,
     password: null,
@@ -172,6 +169,8 @@ const registrationSlice = createSlice({
           const transformedMessage = errorMessage.toLowerCase();
           if (transformedMessage.includes("email")) {
             state.error.email = errorMessage;
+          } else {
+            state.error.unknown = errorMessage;
           }
         }
       })

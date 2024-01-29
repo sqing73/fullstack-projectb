@@ -1,6 +1,6 @@
-const express = require('express');
-const employeeProfileController = require('../controllers/employeeProfileController');
-const hrApplicationController = require('../controllers/hrApplicationController');
+const express = require("express");
+const employeeProfileController = require("../controllers/employeeProfileController");
+const hrVisaController = require("../controllers/hrVisaController");
 const { body } = require("express-validator");
 const { signin, logout } = require("../controllers/hr");
 const {
@@ -8,6 +8,7 @@ const {
   getRegistrationById,
 } = require("../controllers/registration");
 const { requireHrAuth } = require("../middlewares/auth");
+const { fileServeHandler } = require("../controllers/employeeFileController");
 
 const router = require("express").Router();
 
@@ -26,6 +27,20 @@ router
     addRegistration
   );
 
-router.get('/Profile', employeeProfileController.getAllEmployeeProfiles);
-router.get('/applicationStatus', hrApplicationController.getAllEmployeeApplicationInfo);
+router.get(
+  "/employeeProfile",
+  employeeProfileController.getAllEmployeeProfiles
+);
+router
+  .get("/VisaStatus", hrVisaController.getAllEmployeeApplicationInfo)
+  .put("/VisaStatus", hrVisaController.updateVisaStatueById);
+
+router.get("/assets/userFiles/:filename", fileServeHandler);
+router.get("/assets/userAvatars/:filename", fileServeHandler);
+
+router.get(
+  "/noProfileEmployee",
+  employeeProfileController.getNotProfiledEmployees
+);
+
 module.exports = router;

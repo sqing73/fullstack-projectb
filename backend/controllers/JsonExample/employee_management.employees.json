@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "65b345a7a16cb955e8e04905"
+  },
+  "username": "empl",
+  "password": "123",
+  "email": "test@123.com",
+  "profile": {
+    "$oid": "65b34a26a16cb955e8e04914"
+  },
+  "status": "active"
+},
+{
+  "_id": {
+    "$oid": "65b346d6a16cb955e8e0490c"
+  },
+  "username": "ppp",
+  "password": "123",
+  "email": "ppp@test.com",
+  "profile": {
+    "$oid": "65b34a26a16cb955e8e04915"
+  },
+  "status": "inactive"
+},
+{
+  "_id": {
+    "$oid": "65b349c6a16cb955e8e0490d"
+  },
+  "username": "ddd",
+  "password": "123",
+  "email": "ddd@test.com",
+  "profile": {
+    "$oid": "65b34a26a16cb955e8e04916"
+  },
+  "status": "inactive"
+},
+{
+  "_id": {
+    "$oid": "65b5bca4ba23ba5c8a8cf865"
+  },
+  "username": "noprofile",
+  "password": "123",
+  "status": "active",
+  "profile": null,
+  "email": "noprofile@text.com"
+},
+{
+  "_id": {
+    "$oid": "65b6edbbba23ba5c8a8cf86c"
+  },
+  "username": "jake",
+  "password": "123",
+  "email": "jale@test.com",
+  "profile": null,
+  "status": "inactive"
+}]
