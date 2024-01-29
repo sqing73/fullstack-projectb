@@ -16,6 +16,41 @@ exports.getVisaStatus = async (req, res) => {
   }
 };
 
+
+exports.updateVisaStatusFile = async (req, res) => {
+  try {
+    const { filename } = req.body;
+    if (!filename) {
+      return res.status(400).send("Filename is required");
+    }
+
+    const profile = await EmployeeProfile.findById(req.user.profile);
+    if (!profile) {
+      return res.status(404).send("Employee profile not found");
+    }
+
+    const currentStep = profile.visaCurrStep;
+    if (!currentStep || !profile.visaStatus) {
+      return res.status(400).send("Invalid visa status step");
+    }
+
+    if (profile.visaStatus[currentStep] && profile.visaStatus[currentStep].step) {
+      profile.visaStatus[currentStep].step.file = filename;
+      profile.visaStatus[currentStep].step.status = "pending"; 
+      res.status(200).json({ 
+        message: "Visa status file updated and status set to pending",
+        visaStatus: profile.visaStatus 
+      });
+    } else {
+      res.status(400).send("Current visa step does not have a 'step' field or is not defined");
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+
+
 // Create a new visa record for an employee
 exports.createEmployeeProfile = async (req, res) => {
   try {
