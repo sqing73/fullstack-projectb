@@ -33,4 +33,24 @@
     "$oid": "65b34a26a16cb955e8e04916"
   },
   "status": "inactive"
+},
+{
+  "_id": {
+    "$oid": "65b5bca4ba23ba5c8a8cf865"
+  },
+  "username": "noprofile",
+  "password": "123",
+  "status": "active",
+  "profile": null,
+  "email": "noprofile@text.com"
+},
+{
+  "_id": {
+    "$oid": "65b6edbbba23ba5c8a8cf86c"
+  },
+  "username": "jake",
+  "password": "123",
+  "email": "jale@test.com",
+  "profile": null,
+  "status": "inactive"
 }]

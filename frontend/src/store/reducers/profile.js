@@ -32,6 +32,25 @@ export const fectNoProfileEmployees = createAsyncThunk(
   }
 );
 
+export const updateVisaStatus = createAsyncThunk(
+  "profile/update",
+  async ({ profileId, action, feedback }, { rejectWithValue }) => {
+    try {
+      const res = await HR_API.put("/VisaStatus", {
+        profileId,
+        action,
+        feedback,
+      });
+      const newProfile = res.data;
+      return newProfile;
+    } catch (error) {
+      return rejectWithValue({
+        message: error.response?.data.message || error.message,
+      });
+    }
+  }
+);
+
 const initialProfileState = {
   profiles: [],
   noProfileEmployees: [],
@@ -39,6 +58,7 @@ const initialProfileState = {
     unknown: null,
   },
   status: "idle",
+  notification: null,
 };
 
 const profileSlice = createSlice({
@@ -47,6 +67,12 @@ const profileSlice = createSlice({
   reducers: {
     unknownErrorRead(state) {
       state.error.unknown = null;
+    },
+    notificationRead(state) {
+      state.notification = null;
+    },
+    unknownErrorSet(state, action) {
+      state.error.unknown = action.payload;
     },
   },
   extraReducers(builder) {
@@ -72,6 +98,23 @@ const profileSlice = createSlice({
       })
       .addCase(fectNoProfileEmployees.rejected, (state, { payload }) => {
         state.status = "idle";
+        state.error.unknown =
+          payload?.message || "Unknown error, please try a again later";
+      })
+      .addCase(updateVisaStatus.pending, (state, { payload }) => {
+        state.status = "loading";
+      })
+      .addCase(updateVisaStatus.fulfilled, (state, { payload }) => {
+        state.status = "idle";
+        state.profiles.forEach((profile, idx) => {
+          if (profile._id === payload._id) {
+            state.profiles[idx] = payload;
+          }
+        });
+        state.notification = `You have successfully updated ${payload.fullname}'s status`;
+      })
+      .addCase(updateVisaStatus.rejected, (state, { payload }) => {
+        state.status = "loading";
         state.error.unknown =
           payload?.message || "Unknown error, please try a again later";
       })

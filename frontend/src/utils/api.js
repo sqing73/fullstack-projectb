@@ -33,5 +33,16 @@ export const HR_API = axios.create({
   },
 });
 
+export const apiWithAuth = (apiPath) => {
+  const api = axios.create({
+    baseURL: BASE_URL + apiPath,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  api.interceptors.request.use(authInterceptor);
+  return api;
+}
+
 EMPLOYEE_API.interceptors.request.use(authInterceptor);
 HR_API.interceptors.request.use(authInterceptor);

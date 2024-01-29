@@ -3,10 +3,7 @@ const EmployeeModel = require("../models/employee");
 
 exports.getAllEmployeeProfiles = async (req, res) => {
   try {
-    const employeeProfiles = await EmployeeProfile.find(
-      {},
-      "-VisaStatus -visaNextStep"
-    );
+    const employeeProfiles = await EmployeeProfile.find({});
     // const formattedEmployees = employees.map((emp) => ({
     //   id: emp._id, // Including the ObjectId
     //   name: `${emp.name.first} ${emp.name.middle ? emp.name.middle + " " : ""}${

@@ -32,6 +32,7 @@ const AllProfiles = () => {
     });
     return res;
   }, [profiles]);
+
   React.useEffect(() => {
     if (!fetched && profiles.length === 0) {
       dispatch(fetchProfiles()).then((data) =>

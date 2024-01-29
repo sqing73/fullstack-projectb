@@ -6,41 +6,45 @@ import Alert from "@mui/material/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import AllProfiles from "./components/AllProfiles";
 import InProgressProfiles from "./components/InProgressProfiles";
+import { profileActions } from "@/store/reducers/profile";
 
 const Page = () => {
-  const [content, setContent] = useState("allProfiles");
-  const profileError = useSelector((state) => state.profile.error.unknonw);
+  const [content, setContent] = useState("inProgressProfiles");
+  const profileError = useSelector((state) => state.profile.error.unknown);
+  const notification = useSelector((state) => state.profile.notification);
   const dispatch = useDispatch();
   const handleContentChange = (name) => {
     setContent(() => name);
   };
 
-  const registrationAlert = profileError && (
+  const errorAlert = profileError && (
     <Alert
       severity="error"
       onClose={() => {
-        dispatch(registrationActions.registerInputChange());
+        dispatch(profileActions.unknownErrorRead());
       }}
     >
-      {profileError}
+      {setTimeout(() => dispatch(profileActions.unknownErrorRead()), 4000) &&
+        profileError}
     </Alert>
   );
 
-  // const notificationAlert = registrationNotification && (
-  //   <Alert
-  //     severity="success"
-  //     onClose={() => {
-  //       dispatch(registrationActions.readNotification());
-  //     }}
-  //   >
-  //     {registrationNotification}
-  //   </Alert>
-  // );
+  const notificationAlert = notification && (
+    <Alert
+      severity="success"
+      onClose={() => {
+        dispatch(profileActions.notificationRead());
+      }}
+    >
+      {setTimeout(() => dispatch(profileActions.notificationRead()), 4000) &&
+        notification}
+    </Alert>
+  );
 
   return (
     <>
-      {registrationAlert}
-      {/* {notificationAlert} */}
+      {errorAlert}
+      {notificationAlert}
       <Stack direction="column" sx={{ width: "100%", p: 15 }}>
         <Stack direction="row" justifyContent="flex-end" spacing={2}>
           <Button

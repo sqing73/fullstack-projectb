@@ -12,7 +12,7 @@
   "personalInfo": {
     "ssn": "123-45-6789",
     "dob": "1990-01-01",
-    "gender": "male"
+    "gender": "Male"
   },
   "residencyStatus": {
     "isPermanentResidentOrCitizen": false,
@@ -23,7 +23,7 @@
     "work": "555-987-6543"
   },
   "email": "johndoe@example.com",
-  "profilePicture": "profile.jpg",
+  "profilePicture": "65b345a7a16cb955e8e04905-1706302462299.jpg",
   "address": {
     "building": "100",
     "street": "Main St",
@@ -32,34 +32,43 @@
     "zip": "12345"
   },
   "workAuthorization": {
-    "kind": "H1-B",
-    "proof": "test.pdf",
+    "kind": "F1(CPT/OPT)",
+    "proof": "65b345a7a16cb955e8e04905-1706304131062.pdf",
     "start": "2023-01-01",
-    "end": "2026-01-01"
+    "end": "2026-01-01",
+    "_id": {
+      "$oid": "65b709f382e527405f10b94b"
+    }
   },
   "visaStatus": {
     "OPTreceipt": {
       "step": {
         "status": "approved",
         "feedback": null,
-        "file": "opt-receipt.pdf"
+        "file": "65b345a7a16cb955e8e04905-1706305775549.pdf"
       }
     },
     "OPTead": {
       "step": {
         "status": "approved",
         "feedback": null,
-        "file": "opt-ead.pdf"
+        "file": "65b345a7a16cb955e8e04905-1706305876927.pdf"
       }
     },
     "I983": {
       "step": {
-        "status": "rejected",
-        "feedback": "file cannot open",
+        "status": "approved",
+        "feedback": null,
         "file": "i983.pdf"
       }
     },
-    "I20": null
+    "I20": {
+      "step": {
+        "feedback": null,
+        "file": "template1.pdf",
+        "status": "approved"
+      }
+    }
   },
   "reference": {
     "fname": "Alice",
@@ -69,7 +78,6 @@
     "email": "alice.smith@example.com",
     "relationship": "Former Colleague"
   },
-  "visaCurrStep": "I20",
   "applicationStatus": "approved",
   "applicationFeedback": null,
   "emergencyContacts": [
@@ -89,7 +97,8 @@
       "email": "andy@example.com",
       "relationship": "Father"
     }
-  ]
+  ],
+  "visaCurrStep": "complete"
 },
 {
   "_id": {
@@ -105,7 +114,7 @@
   "personalInfo": {
     "ssn": "123-45-6789",
     "dob": "1990-01-01",
-    "gender": "male"
+    "gender": "Male"
   },
   "residencyStatus": {
     "isPermanentResidentOrCitizen": false,
@@ -167,7 +176,7 @@
   "personalInfo": {
     "ssn": "123-45-6789",
     "dob": "1990-01-01",
-    "gender": "male"
+    "gender": "Male"
   },
   "residencyStatus": {
     "isPermanentResidentOrCitizen": true,
@@ -204,6 +213,96 @@
       "phone": "335-345-8953",
       "email": "alice.jones@example.com",
       "relationship": "Sister"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65b6ee6dba23ba5c8a8cf86f"
+  },
+  "employeeId": "65b6edbbba23ba5c8a8cf86c",
+  "name": {
+    "first": "Jake",
+    "last": "Smalling",
+    "middle": "B",
+    "preferred": "Jake"
+  },
+  "personalInfo": {
+    "ssn": "123-45-6789",
+    "dob": "1990-01-01",
+    "gender": "Male"
+  },
+  "residencyStatus": {
+    "isPermanentResidentOrCitizen": false,
+    "status": "none"
+  },
+  "phoneNumbers": {
+    "cell": "555-123-4567",
+    "work": "555-987-6543"
+  },
+  "email": "johndoe@example.com",
+  "profilePicture": "65b345a7a16cb955e8e04905-1706302462299.jpg",
+  "address": {
+    "building": "100",
+    "street": "Main St",
+    "city": "Anytown",
+    "state": "CA",
+    "zip": "12345"
+  },
+  "workAuthorization": {
+    "kind": "F1(CPT/OPT)",
+    "proof": "65b345a7a16cb955e8e04905-1706304131062.pdf",
+    "start": "2023-01-01",
+    "end": "2026-01-01",
+    "_id": {
+      "$oid": "65b718405858585139d41db7"
+    }
+  },
+  "visaStatus": {
+    "OPTreceipt": {
+      "step": {
+        "status": "approved",
+        "feedback": null,
+        "file": "sample.pdf"
+      }
+    },
+    "OPTead": {
+      "step": {
+        "status": "approved",
+        "feedback": null,
+        "file": "sample.pdf"
+      }
+    },
+    "I983": null,
+    "I20": null
+  },
+  "reference": {
+    "fname": "Alice",
+    "lname": "Smith",
+    "mname": "B",
+    "phone": "555-678-1234",
+    "email": "alice.smith@example.com",
+    "relationship": "Former Colleague"
+  },
+  "visaCurrStep": "I983",
+  "applicationStatus": "approved",
+  "applicationFeedback": null,
+  "emergencyContacts": [
+    {
+      "fname": "Robert",
+      "lname": "Johnson",
+      "mname": "C",
+      "phone": "555-321-9876",
+      "email": "robert.johnson@example.com",
+      "relationship": "Brother"
+    },
+    {
+      "fname": "Andy",
+      "lname": "Johnson",
+      "mname": "A",
+      "phone": "525-351-9276",
+      "email": "andy@example.com",
+      "relationship": "Father"
     }
   ]
 }]
