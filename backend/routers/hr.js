@@ -31,7 +31,9 @@ router.get(
   "/employeeProfile",
   employeeProfileController.getAllEmployeeProfiles
 );
-router.get("/VisaStatus", hrVisaController.getAllEmployeeApplicationInfo);
+router
+  .get("/VisaStatus", hrVisaController.getAllEmployeeApplicationInfo)
+  .put("/VisaStatus", hrVisaController.updateVisaStatueById);
 
 router.get("/assets/userFiles/:filename", fileServeHandler);
 router.get("/assets/userAvatars/:filename", fileServeHandler);
