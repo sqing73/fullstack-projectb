@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
 import { apiWithAuth } from "@/utils/api";
 import { Button, TextField, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { useRouter } from "next/navigation";
 import styles from "@/ui/profile.module.css"
 
 export default function Page({params}) {
@@ -63,10 +64,10 @@ export default function Page({params}) {
       email: "",
       relationship: "",
     },
-    applicationStatus: null,
+    applicationStatus: "loading...",
     applicationFeedback: "",
   });
-
+  const router = useRouter();
   const handleDecision = (event) => {
     setApplication((prevApp) => ({
       ...prevApp,
@@ -103,6 +104,8 @@ export default function Page({params}) {
     api.put("/", state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
+    router.push("/hr/hiring");
+
   };
   return (
     <div style={{ display: "flex" }}>

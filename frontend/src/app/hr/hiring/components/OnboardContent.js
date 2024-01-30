@@ -39,8 +39,9 @@ const OnboardContent = () => {
   const [fetched, setFetched] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const force_request = true; // DEBUG
   React.useEffect(() => {
-    if (!fetched && profiles.length === 0) {
+    if (force_request || (!fetched && profiles.length === 0)) {
       dispatch(fetchProfiles());
     }
     return () => setFetched(true);
