@@ -10,9 +10,6 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import SideMenu from "@/shared/nav";
-import { useDispatch, useSelector } from "react-redux";
-import { applicationActions } from "@/store/reducers/application";
 
 
 export default function Page(params) {
@@ -20,52 +17,8 @@ export default function Page(params) {
   const { id } = params;
   const path = "/employee/profile";
   const api = apiWithAuth(path);
-  // const [readOnly, setReadOnly] = useState(true);
-  const readOnly = true;
   const [initialized, setInitialized] = useState(false);
   const [application, setApplication] = useState({
-    fname: "", // required
-    lname: "", // required
-    mname: "",
-    pname: "",
-    profilePicture: "",
-    address: {
-      // required
-      building: "",
-      street: "",
-      city: "",
-      state: "",
-      zip: "",
-    },
-    cell: "", // required
-    email: "", // required, init from server
-    ssn: "", // required
-    dob: "2024-01-01", // required
-    gender: "", // required, f/m/unknown
-    citizen: "Green Card", // required, green card/citizen/false
-    workAuth: {
-      kind: "", // H1-B, L2, F1(CPT/OPT), H4, Other
-      title: "", // for Other
-      proof: "", // for F1
-      start: "2024-01-01",
-      end: "2024-01-01",
-    },
-    reference: {
-      fname: "", // required
-      lname: "", // required
-      mname: "",
-      phone: "",
-      email: "",
-      relationship: "", // required
-    },
-    emergencyContacts: {
-      fname: "",
-      lname: "",
-      pname: "",
-      phone: "",
-      email: "",
-      relationship: "",
-    },
     applicationStatus: null,
     applicationFeedback: "",
   });
@@ -82,13 +35,12 @@ export default function Page(params) {
       applicationFeedback: event.target.value,
     }))
   }
-  
+
   useEffect(() => {
     const fetchApplication = async () => {
       try {
         const response = await api.get("/");
-        setApplication(response.data); // Assuming the response contains the application data
-        // dispatch(applicationActions.setApplicationInfo({...response.data}));
+        setApplication(response.data);
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
       } finally {
@@ -102,62 +54,12 @@ export default function Page(params) {
   const handleSubmit = () => {
     const state = {
       _id: id,
-      name: {
-        first: application.fname ?? "",
-        last: application.lname ?? "",
-        middle: application.mname ?? "",
-        preferred: application.pname ?? "",
-      },
-      personalInfo: {
-        ssn: application.ssn ?? "",
-        dob: application.dob ?? "2024-01-01",
-        gender: application.gender ?? "",
-      },
-      residencyStatus: {
-        status: application.citizen ?? "",
-      },
-      phoneNumbers: {
-        cell: application.cell ?? "",
-      },
-      email: application.email ?? "",
-      profilePicture: application.profilePicture ?? "",
-      address: application.address ?? {
-        building: "",
-        street: "",
-        city: "",
-        state: "",
-        zip: "",
-      },
-      workAuthorization: application.workAuthorization ?? {
-        kind: "",
-        title: "",
-        proof: "",
-        start: "2024-01-01",
-        end: "2024-01-01",
-      },
-      reference: application.reference ?? {
-        fname: "",
-        lname: "",
-        mname: "",
-        phone: "",
-        email: "",
-        relationship: "",
-      },
-      emergencyContacts: application.emergencyContacts ?? {
-        fname: "",
-        lname: "",
-        pname: "",
-        phone: "",
-        email: "",
-        relationship: "",
-      },
-      applicationStatus: "pending",
+      ...application
     }
     api.put(`/${id}`, state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
   };
-  // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
   return (
     <div style={{ display: "flex" }}>
       <Box style={{ padding: "16px" }}>
