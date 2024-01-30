@@ -7,7 +7,7 @@ import { EMPLOYEE_API } from "@/utils/api";
 
 const dotRe = /\.([a-zA-Z]+)$/;
 
-const SubmitFile = ({ image = false, onFileName, onSuccess, onUploadSuccess, stepName, ...props }) => {
+const SubmitFile = ({ image = false, onFileUploadSuccess, ...props }) => {
   const endpoint = image ? "/assets/userAvatars" : "/assets/userFiles";
   const [submissionError, setSubmissionError] = React.useState(null);
   const [submitting, setSubmitting] = React.useState(false);
@@ -37,15 +37,15 @@ const SubmitFile = ({ image = false, onFileName, onSuccess, onUploadSuccess, ste
             "Content-Type": "multipart/form-data",
           },
         });
-        onFileName && onFileName(res.data.fileName);
+        onFileUploadSuccess && (await onFileUploadSuccess(res.data.fileName));
         setSubmissionError(null);
         setSuccess(true);
 
         // Call the onUploadSuccess callback with fileName and stepName
-        onUploadSuccess && onUploadSuccess(fileName, stepName);
+        // onUploadSuccess && onUploadSuccess(fileName, stepName);
 
         // Call the onSuccess callback if provided
-        onSuccess && onSuccess();
+        // onSuccess && onSuccess();
       } catch (error) {
         console.log(error);
         setSubmissionError(error.response?.data?.message || "Unknown error");

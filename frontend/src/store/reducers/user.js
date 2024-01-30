@@ -13,7 +13,8 @@ export const initializeUser = createAsyncThunk("user/initialize", async () => {
       return {};
     }
     const tokenUpdatedAt = new Date(localUser.tokenUpdatedAt);
-    const tokenEpxired = tokenUpdatedAt + 3 * 24 * 60 * 60 * 1000 < Date.now();
+    const tokenEpxired =
+      tokenUpdatedAt.getTime() + 3 * 24 * 60 * 60 * 1000 < Date.now();
     if (tokenEpxired) {
       localStorage.removeItem("user");
       return {};

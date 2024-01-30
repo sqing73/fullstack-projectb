@@ -32,7 +32,14 @@ const Page = () => {
   const handleSignin = async () => {
     const result = await dispatch(signinUser(input));
     if (signinUser.fulfilled.match(result)) {
-      router.push(`/${result.payload.user.role}`);
+      if (
+        result.payload.user.role === "employee" &&
+        result.payload.user.profile?.applicationStatus !== "approved"
+      ) {
+        router.push("/application");
+      } else {
+        router.push(`/${result.payload.user.role}`);
+      }
     }
   };
 

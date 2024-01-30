@@ -16,7 +16,11 @@ const useProtectRoute = () => {
       !user.username ||
       !user.role ||
       (rootPath !== "application" && rootPath !== user.role) ||
-      (rootPath === "application" && user.role === "hr")
+      (rootPath === "application" && user.role === "hr") ||
+      (rootPath === "application" &&
+        user.role === "employee" &&
+        user.profile &&
+        user.profile.applicationStatus === "approved")
     ) {
       dispatch(logoutUser());
       router.replace("/signin");

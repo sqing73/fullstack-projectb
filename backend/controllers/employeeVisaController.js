@@ -16,7 +16,6 @@ exports.getVisaStatus = async (req, res) => {
   }
 };
 
-
 exports.updateVisaStatusFile = async (req, res) => {
   try {
     const { filename } = req.body;
@@ -34,22 +33,30 @@ exports.updateVisaStatusFile = async (req, res) => {
       return res.status(400).send("Invalid visa status step");
     }
 
-    if (profile.visaStatus[currentStep] && profile.visaStatus[currentStep].step) {
+    if (
+      profile.visaStatus[currentStep] &&
+      profile.visaStatus[currentStep].step
+    ) {
       profile.visaStatus[currentStep].step.file = filename;
-      profile.visaStatus[currentStep].step.status = "pending"; 
-      res.status(200).json({ 
-        message: "Visa status file updated and status set to pending",
-        visaStatus: profile.visaStatus 
-      });
+      profile.visaStatus[currentStep].step.status = "pending";
     } else {
-      res.status(400).send("Current visa step does not have a 'step' field or is not defined");
+      profile.visaStatus[currentStep] = {
+        step: {
+          file: filename,
+          status: "pending",
+          feedback: null,
+        },
+      };
     }
+    await profile.save();
+    res.status(200).json({
+      message: "Visa status file updated and status set to pending",
+      visaStatus: profile.visaStatus,
+    });
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
-
-
 
 // Create a new visa record for an employee
 exports.createEmployeeProfile = async (req, res) => {
@@ -92,7 +99,7 @@ exports.modifyEmployeeProfile = async (req, res) => {
     const updates = {
       ...req.body,
     };
-//TODO: check if body only contains modifiable fields
+    //TODO: check if body only contains modifiable fields
     const updatedProfile = await EmployerProfile.findByIdAndUpdate(
       req.user.profile,
       updates,

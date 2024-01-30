@@ -44,7 +44,7 @@ const VisaStatus = ({ visaStatus, visaCurrStep }) => {
                         <h3>{key}</h3>
                         <p>Status: {value?.step?.status || 'N/A'}</p>
                         <p>Message: {getMessage({ key, ...value })}</p>
-                        <p>Document: {value?.step?.file || 'No file'}</p>
+                        {/* <p>Document: {value?.step?.file || 'No file'}</p> */}
                     </div>
                 ))}
             </div>
