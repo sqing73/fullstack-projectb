@@ -63,9 +63,15 @@ const applicationSlice = createSlice({
   initialState: initialApplicationState,
   reducers: {
     setApplicationInfo(state, { payload }) {
-        Object.keys(payload).forEach(key => {
-            state[key] = payload[key];
-            });
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+          // Assuming a nested object structure
+          Object.assign(state[key], value);
+        } else {
+          // Direct assignment for other types (primitive types or arrays)
+          state[key] = value;
+        }
+      });
     },
   },
 });
