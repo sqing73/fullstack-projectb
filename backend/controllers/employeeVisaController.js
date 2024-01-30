@@ -84,7 +84,7 @@ exports.getEmployeeProfile = async (req, res) => {
       return res.status(404).send("Employee profile not found");
     }
     const profile = await EmployeeProfile.findById(req.user.profile).select(
-      "-visaStatus -visaCurrStep -workAuthorization"
+      "-visaStatus -visaCurrStep"
     );
 
     res.json(profile);
@@ -99,8 +99,8 @@ exports.modifyEmployeeProfile = async (req, res) => {
     const updates = {
       ...req.body,
     };
-    //TODO: check if body only contains modifiable fields
-    const updatedProfile = await EmployerProfile.findByIdAndUpdate(
+//TODO: check if body only contains modifiable fields
+    const updatedProfile = await EmployeeProfile.findByIdAndUpdate(
       req.user.profile,
       updates,
       { new: true }
