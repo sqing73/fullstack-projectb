@@ -224,18 +224,30 @@ const EditApplication = (props) => {
     //
   }, []);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event, index = null) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
 
     if (subField) {
-      setInputs((prevInputs) => ({
-        ...prevInputs,
-        [field]: {
-          ...prevInputs[field],
+      if (index !== null) {
+        const newArray = [...inputs[field]];
+        (newArray[index] = {
+          ...newArray[index],
           [subField]: value,
-        },
-      }));
+        }),
+          setInputs((prevInputs) => ({
+            ...prevInputs,
+            [field]: newArray,
+          }));
+      } else {
+        setInputs((prevInputs) => ({
+          ...prevInputs,
+          [field]: {
+            ...prevInputs[field],
+            [subField]: value,
+          },
+        }));
+      }
     } else {
       setInputs((prevInputs) => ({
         ...prevInputs,
