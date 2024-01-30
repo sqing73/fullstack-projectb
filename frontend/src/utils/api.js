@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "http://us1.kyrios.cn:8913";
 const EMPLOYEE_URL = `${BASE_URL}/employee`;
 const HR_URL = `${BASE_URL}/hr`;
 

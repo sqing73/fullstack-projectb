@@ -11,9 +11,9 @@ import {
   Box,
 } from "@mui/material";
 import { apiWithAuth } from "@/utils/api";
-import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
+import { useRouter } from 'next/navigation';
 import styles from "@/ui/profile.module.css";
 
 const Applications = () => {
@@ -57,9 +57,9 @@ const Applications = () => {
 
 const ViewApplication = () => {
   const application = useSelector((state) => state.application);
-
+  const router = useRouter();
   const handleReturn = () => {
-    redirect("../");
+    router.back();
   };
 
   return (

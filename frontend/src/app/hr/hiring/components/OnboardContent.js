@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
@@ -13,7 +14,8 @@ import Box from "@mui/material/Box";
 import { useSelector, useDispatch } from "react-redux";
 // import { fetchRegistrations } from "@/store/reducers/registration";
 import RegistrationGenerate from "./RegistrationGenerate";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { fetchProfiles, profileActions } from "@/store/reducers/profile";
 
 const style = {
   position: "absolute",
@@ -35,12 +37,14 @@ const OnboardContent = () => {
   const handleClose = () => setOpen(false);
 
   const [fetched, setFetched] = React.useState(false);
-
+  const dispatch = useDispatch();
+  const router = useRouter();
   React.useEffect(() => {
     if (!fetched && profiles.length === 0) {
-      // TODO: fetch profiles if need
+      dispatch(fetchProfiles());
     }
-  }, []);
+    return () => setFetched(true);
+  }, [fetched, profiles]);
 
   if (status !== "idle") {
     return <Typography>Loading...</Typography>;
@@ -49,7 +53,7 @@ const OnboardContent = () => {
   const handleClick = (id) => {
     return () => {
       console.log("redirect to ", id);
-      redirect(`/application/hr_view/${id}`)
+      router.push(`/hr/application/${id}`)
     };
   };
   return (

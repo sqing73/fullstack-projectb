@@ -2,15 +2,67 @@
 import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
 import { apiWithAuth } from "@/utils/api";
-import { Button, TextField, FormControl } from "@mui/material";
+import { Button, TextField, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import styles from "@/ui/profile.module.css"
 
-export default function Page(params) {
+export default function Page({params}) {
   // init application from server / redux
   const { id } = params;
-  const path = "/employee/profile";
+  const path = "/hr/profile";
   const api = apiWithAuth(path);
   const [initialized, setInitialized] = useState(false);
   const [application, setApplication] = useState({
+    name: {
+      first: "",
+      last: "",
+      middle: "", // Optional
+      preferred: "", // Optional
+    },
+    profilePicture: "",
+    address: {
+      // required
+      building: "",
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
+    phoneNumbers: {
+      cell: "", // required
+      work: "",
+    },
+    email: "", // required, init from server
+    personalInfo: {
+      ssn: "", // required
+      dob: "2024-01-01", // required
+      gender: "", // required, f/m/unknown
+    },
+    residencyStatus: {
+      status: "Green Card", // required, green card/citizen/false
+    },
+    workAuth: {
+      kind: "", // H1-B, L2, F1(CPT/OPT), H4, Other
+      title: "", // for Other
+      proof: "", // for F1
+      start: "2024-01-01",
+      end: "2024-01-01",
+    },
+    reference: {
+      fname: "", // required
+      lname: "", // required
+      mname: "",
+      phone: "",
+      email: "",
+      relationship: "", // required
+    },
+    emergencyContacts: {
+      fname: "",
+      lname: "",
+      mname: "",
+      phone: "",
+      email: "",
+      relationship: "",
+    },
     applicationStatus: null,
     applicationFeedback: "",
   });
@@ -31,7 +83,7 @@ export default function Page(params) {
   useEffect(() => {
     const fetchApplication = async () => {
       try {
-        const response = await api.get("/");
+        const response = await api.get(`/${id}`);
         setApplication(response.data);
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
@@ -48,7 +100,7 @@ export default function Page(params) {
       _id: id,
       ...application,
     };
-    api.put(`/${id}`, state);
+    api.put("/", state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
   };
@@ -56,7 +108,6 @@ export default function Page(params) {
     <div style={{ display: "flex" }}>
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Onboarding Application</h1>
-        <p>(Read Only)</p>
         <p>Status: {application.applicationStatus}</p>
         <div className={styles.inputSectionLabel}>Personal Information</div>
 
@@ -124,11 +175,6 @@ export default function Page(params) {
         <div>Phone: {application.emergencyContacts.phone}</div>
         <div>Email: {application.emergencyContacts.email}</div>
         <div>Relationship: {application.emergencyContacts.relationship}</div>
-        <div className={styles.inputSectionLabel}>
-          <Button variant="contained" onClick={handleReturn}>
-            Return
-          </Button>
-        </div>
 
         <div className={styles.inputSectionLabel}>Decision</div>
         <FormControl>
