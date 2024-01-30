@@ -29,7 +29,7 @@ exports.createEmployeeProfile = async (req, res) => {
     req.user.profile = savedEmployeeProfile._id;
     await req.user.save();
 
-    res.status(201).json(savedEmployer); // Send back the created profile with a 201 Created status
+    res.status(201).json(savedEmployeeProfile); // Send back the created profile with a 201 Created status
   } catch (error) {
     res.status(500).send(error.message);
   }
