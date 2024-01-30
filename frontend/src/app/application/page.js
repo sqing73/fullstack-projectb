@@ -765,7 +765,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
             <TextField
@@ -776,7 +776,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
             <TextField
@@ -786,7 +786,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
             <TextField
@@ -796,7 +796,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
             <TextField
@@ -807,7 +807,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
             <TextField
@@ -818,7 +818,7 @@ const EditApplication = (props) => {
               variant="standard"
               onChange={(e) => handleInputChange(e, index)}
               InputProps={{
-                readOnly: readOnly.emergencyContacts,
+                readOnly: readOnly,
               }}
             />
           </>
