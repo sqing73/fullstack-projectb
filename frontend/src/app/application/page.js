@@ -1,17 +1,26 @@
+"use client"
+import { useState, useEffect } from "react";
 import SideMenu from "@/shared/nav";
-import { Button, Box } from "@mui/material";
+import { Button,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl, Box } from "@mui/material";
 import { apiWithAuth } from "@/utils/api";
 import { redirect } from 'next/navigation';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
+import styles from "@/ui/profile.module.css"
 
 const Applications = () => {
   // @ Init User, Save info to redux, redirect to Start New Application / View Submitted Application automatically
   // const id = 1;
   
-  const path = "/profile";
+  const path = "/employee/profile";
   const api = apiWithAuth(path);
-  let readOnly = true;
+  const [readOnly, setReadOnly] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,11 +30,13 @@ const Applications = () => {
         // setApplication(response.data); // Assuming the response contains the application data
         dispatch(applicationActions.setApplicationInfo({...response.data}));
         if (response.data.applicationStatus === "rejected") {
-           readOnly = false;
+           setReadOnly(false);
         }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
-        readOnly = false;
+        setReadOnly(false);
+      } finally {
+        setInitialized(true);
       }
     };
 
@@ -36,7 +47,7 @@ const Applications = () => {
   return (
     <div style={{ display: "flex" }}>
       <SideMenu />
-      {readOnly?<ViewApplication />:<EditApplication api={api} readOnly={false}/>}
+      {initialized===true && (readOnly ? <ViewApplication /> : <EditApplication api={api}/>)}
     </div>
   );
 };
@@ -45,37 +56,37 @@ const ViewApplication = () => {
   const application = useSelector(state => state.application);
 
   const handleReturn = () => {
-    redirect("/");
+    redirect("../");
   }
   
   return (
     <div>
         <Box style={{ padding: "16px" }}>
-          <h1>Onboarding Application</h1>
+          <h1 className={styles.h1}>Onboarding Application</h1>
           <p>(Read Only)</p>
           <p>Status: {application.applicationStatus}</p>
-          <div className="input-section-label">Personal Information</div>
+          <div className={styles.inputSectionLabel}>Personal Information</div>
 
-          <div>First Name: {application.name.fname}</div>
-          <div>Last Name: {application.name.lname}</div>
-          <div>Middle Name: {application.name.mname}</div>
-          <div>Preferred Name: {application.name.pname}</div>
+          <div>First Name: {application.name.first}</div>
+          <div>Last Name: {application.name.last}</div>
+          <div>Middle Name: {application.name.middle}</div>
+          <div>Preferred Name: {application.name.preferred}</div>
           <div>Profile Picture: {application.profilePicture}</div>
 
           <div>Cell Phone Number: {application.phoneNumbers.cell}</div>
           <div>Email: {application.email}</div>
-          <div>SSN: {application.ssn}</div>
-          <div>Date of Birth: {application.dob}</div>
-          <div>Gender: {application.gender}</div>
+          <div>SSN: {application.personalInfo.ssn}</div>
+          <div>Date of Birth: {application.personalInfo.dob.split('T')[0]}</div>
+          <div>Gender: {application.personalInfo.gender}</div>
 
-          <div className="input-section-label">Address</div>
+          <div className={styles.inputSectionLabel}>Address</div>
           <div>Building/Apt #: {application.address.building}</div>
           <div>Street: {application.address.street}</div>
           <div>City: {application.address.city}</div>
           <div>State: {application.address.state}</div>
           <div>Zip: {application.address.zip}</div>
 
-          <div className="input-section-label">Residency Status</div>
+          <div className={styles.inputSectionLabel}>Residency Status</div>
           <div>
             {application.residencyStatus.status === "Green Card" && "Yes, I have a green card"}
             {application.residencyStatus.status === "Citizen" && "Yes, I am a citizen of the U.S."}
@@ -84,20 +95,20 @@ const ViewApplication = () => {
 
           {application.residencyStatus.status === "none" && (
             <div>
-              <div className="input-section-label">Work Authorization</div>
-              <div>Work Authorization Type: {application.workAuth.type}</div>
+              <div className={styles.inputSectionLabel}>Work Authorization</div>
+              <div>Work Authorization Type: {application.workAuthorization.kind}</div>
               <div>
-                {application.workAuth.type === "F1(OPT/CPT)" &&
-                  `OPT Receipt: ${application.workAuth.proof}`}
-                {application.workAuth.type === "Other" &&
-                  `Visa Title: ${application.workAuth.title}`}
+                {application.workAuthorization.kind === "F1(CPT/OPT)" &&
+                  `OPT Receipt: ${application.workAuthorization.proof}`}
+                {application.workAuthorization.kind === "Other" &&
+                  `Visa Title: ${application.workAuthorization.title}`}
               </div>
-              <div>Start Date: {application.workAuth.start}</div>
-              <div>End Date: {application.workAuth.end}</div>
+              <div>Start Date: {application.workAuthorization.start.split('T')[0]}</div>
+              <div>End Date: {application.workAuthorization.end.split('T')[0]}</div>
             </div>
           )}
 
-          <div className="input-section-label">Reference</div>
+          <div className={styles.inputSectionLabel}>Reference</div>
           <div>First Name: {application.reference.fname}</div>
           <div>Last Name: {application.reference.lname}</div>
           <div>Middle Name: {application.reference.mname}</div>
@@ -105,14 +116,14 @@ const ViewApplication = () => {
           <div>Email: {application.reference.email}</div>
           <div>Relationship: {application.reference.relationship}</div>
 
-          <div className="input-section-label">Emergency Contacts</div>
+          <div className={styles.inputSectionLabel}>Emergency Contacts</div>
           <div>First Name: {application.emergencyContacts.fname}</div>
           <div>Last Name: {application.emergencyContacts.lname}</div>
           <div>Middle Name: {application.emergencyContacts.mname}</div>
           <div>Phone: {application.emergencyContacts.phone}</div>
           <div>Email: {application.emergencyContacts.email}</div>
           <div>Relationship: {application.emergencyContacts.relationship}</div>
-          <div className="input-section-label">
+          <div className={styles.inputSectionLabel}>
             <Button variant="contained" onClick={handleReturn}>
               Return
             </Button>
@@ -126,7 +137,8 @@ const EditApplication = (props) => {
   // init application from server / redux
   // const { id } = params;
   const { api } = props;
-  let readOnly = false; // legacy option
+  const [readOnly, setReadOnly] = useState(false); // legacy option
+  const application = useSelector(state => state.application);
 
   const [inputs, setInputs] = useState({
     name: {
@@ -175,7 +187,7 @@ const EditApplication = (props) => {
     emergencyContacts: {
       fname: "",
       lname: "",
-      pname: "",
+      mname: "",
       phone: "",
       email: "",
       relationship: "",
@@ -183,11 +195,7 @@ const EditApplication = (props) => {
   });
 
   useEffect(() => {
-    const application = useSelector(state => state.application);
-
-    if (props.readOnly === true) {
-      readOnly = true;
-    }
+    //
   }, []);
   
   const handleInputChange = (event) => {
@@ -240,10 +248,10 @@ const EditApplication = (props) => {
         state: "",
         zip: "",
       },
-      workAuthorization: inputs.workAuthorization ?? {
-        kind: "",
-        title: "",
-        proof: "",
+      workAuthorization: {
+        kind: inputs.workAuth.kind ?? "",
+        title: inputs.workAuth.kind === "Other" ? inputs.workAuth.title : "",
+        proof: inputs.workAuth.kind === "F1(CPT/OPT)" ? inputs.workAuth.proof : "",
         start: "2024-01-01",
         end: "2024-01-01",
       },
@@ -258,7 +266,7 @@ const EditApplication = (props) => {
       emergencyContacts: inputs.emergencyContacts ?? {
         fname: "",
         lname: "",
-        pname: "",
+        mname: "",
         phone: "",
         email: "",
         relationship: "",
@@ -266,11 +274,13 @@ const EditApplication = (props) => {
       applicationStatus: "pending",
     }
     dispatch(applicationActions.setApplicationInfo({...state}));
-    api.post("/", state);
+    try {
+      api.post("/", state);
+    } catch (err) {
+      console.error("Failed to submit user application:", err);
+    }
     // @TODO exception handling, redirect to view application
-    // console.log("submit:", inputs);
   };
-  // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
   return (
     <div style={{ display: "flex" }}>
       <SideMenu />
@@ -279,10 +289,10 @@ const EditApplication = (props) => {
         <p>
           {readOnly ? "(Read Only)" : ""}
         </p>
-        <div className="input-section-label">Personal Information</div>
+        <div className={styles.inputSectionLabel}>Personal Information</div>
         <TextField
           required
-          name="fname"
+          name="name.first"
           value={inputs.name.first}
           label="First Name"
           variant="standard"
@@ -293,7 +303,7 @@ const EditApplication = (props) => {
         />
         <TextField
           required
-          name="lname"
+          name="name.last"
           value={inputs.name.last}
           label="Last Name"
           variant="standard"
@@ -303,7 +313,7 @@ const EditApplication = (props) => {
           }}
         />
         <TextField
-          name="mname"
+          name="name.middle"
           value={inputs.name.middle}
           label="Middle Name"
           variant="standard"
@@ -313,7 +323,7 @@ const EditApplication = (props) => {
           }}
         />
         <TextField
-          name="pname"
+          name="name.preferred"
           value={inputs.name.preferred}
           label="Preferred Name"
           variant="standard"
@@ -335,7 +345,7 @@ const EditApplication = (props) => {
 
         <TextField
           required
-          name="cell"
+          name="phoneNumbers.cell"
           value={inputs.phoneNumbers.cell}
           label="Cell Phone Number"
           variant="standard"
@@ -358,7 +368,7 @@ const EditApplication = (props) => {
         />
         <TextField
           required
-          name="ssn"
+          name="personalInfo.ssn"
           value={inputs.personalInfo.ssn}
           label="SSN"
           variant="standard"
@@ -370,7 +380,7 @@ const EditApplication = (props) => {
         <TextField
           required
           type="date"
-          name="dob"
+          name="personalInfo.dob"
           value={inputs.personalInfo.dob}
           label="Date of Birth"
           variant="standard"
@@ -387,7 +397,7 @@ const EditApplication = (props) => {
           <InputLabel id="gender-select-label">Gender</InputLabel>
           <Select
             required
-            name="gender"
+            name="personalInfo.gender"
             labelId="gender-select-label"
             value={inputs.personalInfo.gender}
             label="Gender"
@@ -396,12 +406,12 @@ const EditApplication = (props) => {
               readOnly: readOnly,
             }}
           >
-            <MenuItem value={"male"}>Male</MenuItem>
-            <MenuItem value={"female"}>Female</MenuItem>
-            <MenuItem value={"unknown"}>I do not wish to answer</MenuItem>
+            <MenuItem value={"Male"}>Male</MenuItem>
+            <MenuItem value={"Female"}>Female</MenuItem>
+            <MenuItem value={"Other"}>I do not wish to answer</MenuItem>
           </Select>
         </FormControl>
-        <div className="input-section-label">Address</div>
+        <div className={styles.inputSectionLabel}>Address</div>
         <TextField
           name="address.building"
           value={inputs.address.building}
@@ -457,7 +467,7 @@ const EditApplication = (props) => {
           }}
         />
 
-        <div className="input-section-label">
+        <div className={styles.inputSectionLabel}>
           Are you permanent resident or citizen of the U.S.?
         </div>
         <FormControl
@@ -467,7 +477,7 @@ const EditApplication = (props) => {
         >
           <Select
             required
-            name="citizen"
+            name="residencyStatus.status"
             label=""
             value={inputs.residencyStatus.status}
             onChange={handleInputChange}
@@ -481,7 +491,7 @@ const EditApplication = (props) => {
           </Select>
         </FormControl>
         <div>
-          {inputs.residencyStatus.status === "false" ? (
+          {inputs.residencyStatus.status === "none" ? (
             <div>
               <FormControl
                 variant="standard"
@@ -507,7 +517,7 @@ const EditApplication = (props) => {
                   <MenuItem value={"Other"}>Other</MenuItem>
                 </Select>
               </FormControl>
-              {inputs.workAuth.kind === "F1(OPT/CPT)" ? (
+              {inputs.workAuth.kind === "F1(CPT/OPT)" ? (
                 <TextField
                   name="workAuth.proof"
                   value={inputs.workAuth.proof}
@@ -562,7 +572,7 @@ const EditApplication = (props) => {
             <div></div>
           )}
         </div>
-        <div className="input-section-label">Reference</div>
+        <div className={styles.inputSectionLabel}>Reference</div>
         <TextField
           required
           name="reference.fname"
@@ -628,7 +638,7 @@ const EditApplication = (props) => {
           }}
         />
 
-<div className="input-section-label">Emergency Contacts</div>
+<div className={styles.inputSectionLabel}>Emergency Contacts</div>
         <TextField
           required
           name="emergencyContacts.fname"
@@ -693,7 +703,7 @@ const EditApplication = (props) => {
             readOnly: readOnly,
           }}
         />
-        <div className="input-section-label">
+        <div className={styles.inputSectionLabel}>
           <Button variant="contained" onClick={handleSubmit}>
             Submit
           </Button>

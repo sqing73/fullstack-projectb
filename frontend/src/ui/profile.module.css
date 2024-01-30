@@ -1,0 +1,15 @@
+.h1 {
+    font-weight: bold;
+    font-size: 24px;
+}
+.inputSectionLabel {
+    font-weight: bold;
+    margin-top: 16px;
+}
+.miniButton {
+    padding: 0;
+    margin-left: 5px;
+    min-width: 44px;
+    max-height: 32px;
+
+}
