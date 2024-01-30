@@ -198,7 +198,7 @@ export default function Page() {
       },
     }
     // dispatch(applicationActions.setApplicationInfo({...state}));
-    api.post("/", state);
+    api.put("/", state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
   };
