@@ -30,7 +30,6 @@ body {
   margin: 5px;
 }
 
-.input-section-label {
-  margin-top: 16px;
+.MuiButton-contained {
+  background-color: #1976d2;
 }
-

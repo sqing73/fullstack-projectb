@@ -280,9 +280,7 @@ const EditApplication = (props) => {
       console.error("Failed to submit user application:", err);
     }
     // @TODO exception handling, redirect to view application
-    // console.log("submit:", inputs);
   };
-  // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
   return (
     <div style={{ display: "flex" }}>
       <SideMenu />
