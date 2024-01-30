@@ -38,6 +38,8 @@ const initialApplicationState = {
     start: "2024-01-01",
     end: "2024-01-01",
   },
+  visaStatus: null,
+  visaCurrStep: "none",
   reference: {
     fname: "",
     lname: "",
@@ -46,15 +48,22 @@ const initialApplicationState = {
     email: "",
     relationship: "",
   },
-  emergencyContacts: {
+  emergencyContacts: [{
     fname: "",
     lname: "",
     mname: "",
     phone: "",
     email: "",
     relationship: "",
-  },
-  applicationStatus: "pending", 
+  }, {
+    fname: "",
+    lname: "",
+    mname: "",
+    phone: "",
+    email: "",
+    relationship: "",
+  }],
+  applicationStatus: "unsubmitted", 
   applicationFeedback: "",
 };
 

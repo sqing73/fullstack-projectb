@@ -2,11 +2,18 @@
 import { useState, useEffect } from "react";
 import Box from "@mui/system/Box";
 import { apiWithAuth } from "@/utils/api";
-import { Button, TextField, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import {
+  Button,
+  TextField,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
-import styles from "@/ui/profile.module.css"
+import styles from "@/ui/profile.module.css";
 
-export default function Page({params}) {
+export default function Page({ params }) {
   // init application from server / redux
   const { id } = params;
   const path = "/hr/profile";
@@ -56,14 +63,14 @@ export default function Page({params}) {
       email: "",
       relationship: "", // required
     },
-    emergencyContacts: {
+    emergencyContacts: [{
       fname: "",
       lname: "",
       mname: "",
       phone: "",
       email: "",
       relationship: "",
-    },
+    }],
     applicationStatus: "loading...",
     applicationFeedback: "",
   });
@@ -105,7 +112,6 @@ export default function Page({params}) {
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
     router.push("/hr/hiring");
-
   };
   return (
     <div style={{ display: "flex" }}>
@@ -172,12 +178,17 @@ export default function Page({params}) {
         <div>Relationship: {application.reference.relationship}</div>
 
         <div className={styles.inputSectionLabel}>Emergency Contacts</div>
-        <div>First Name: {application.emergencyContacts.fname}</div>
-        <div>Last Name: {application.emergencyContacts.lname}</div>
-        <div>Middle Name: {application.emergencyContacts.mname}</div>
-        <div>Phone: {application.emergencyContacts.phone}</div>
-        <div>Email: {application.emergencyContacts.email}</div>
-        <div>Relationship: {application.emergencyContacts.relationship}</div>
+        {application.emergencyContacts.map((contact, index) => (
+          <>
+            <div>Contact {index + 1}</div>
+            <div>First Name: {contact.fname}</div>
+            <div>Last Name: {contact.lname}</div>
+            <div>Middle Name: {contact.mname}</div>
+            <div>Phone: {contact.phone}</div>
+            <div>Email: {contact.email}</div>
+            <div>Relationship: {contact.relationship}</div>
+          </>
+        ))}
 
         <div className={styles.inputSectionLabel}>Decision</div>
         <FormControl>

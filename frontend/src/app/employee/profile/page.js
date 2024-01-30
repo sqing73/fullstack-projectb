@@ -76,14 +76,14 @@ export default function Page() {
       email: "",
       relationship: "", // required
     },
-    emergencyContacts: {
+    emergencyContacts: [{
       fname: "",
       lname: "",
       mname: "",
       phone: "",
       email: "",
       relationship: "",
-    },
+    }],
   });
 
   useEffect(() => {
@@ -119,18 +119,30 @@ export default function Page() {
       }));
     }
   };
-  const handleInputChange = (event) => {
+  const handleInputChange = (event, index = null) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
 
     if (subField) {
-      setInputs((prevInputs) => ({
-        ...prevInputs,
-        [field]: {
-          ...prevInputs[field],
+      if (index !== null) {
+        const newArray = [...inputs[field]];
+        (newArray[index] = {
+          ...newArray[index],
           [subField]: value,
-        },
-      }));
+        }),
+          setInputs((prevInputs) => ({
+            ...prevInputs,
+            [field]: newArray,
+          }));
+      } else {
+        setInputs((prevInputs) => ({
+          ...prevInputs,
+          [field]: {
+            ...prevInputs[field],
+            [subField]: value,
+          },
+        }));
+      }
     } else {
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -207,19 +219,28 @@ export default function Page() {
         email: "",
         relationship: "",
       },
-      emergencyContacts: inputs.emergencyContacts ?? {
+      emergencyContacts: inputs.emergencyContacts ?? [{
         fname: "",
         lname: "",
         mname: "",
         phone: "",
         email: "",
         relationship: "",
-      },
+      }],
     };
     // dispatch(applicationActions.setApplicationInfo({...state}));
     api.put("/", state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
+    setReadOnly({
+      name: true,
+      address: true,
+      contact: true,
+      employment: true,
+      emergencyContacts: true,
+      documents: true,
+      editing: false,
+    });
   };
 
   return (
@@ -668,70 +689,75 @@ export default function Page() {
             </>
           )}
         </div>
-        <TextField
-          required
-          name="emergencyContacts.fname"
-          value={inputs.emergencyContacts.fname}
-          label="First Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
-        <TextField
-          required
-          name="emergencyContacts.lname"
-          value={inputs.emergencyContacts.lname}
-          label="Last Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
-        <TextField
-          name="emergencyContacts.mname"
-          value={inputs.emergencyContacts.mname}
-          label="Middle Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
-        <TextField
-          name="emergencyContacts.phone"
-          value={inputs.emergencyContacts.phone}
-          label="Phone"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
-        <TextField
-          type="email"
-          name="emergencyContacts.email"
-          value={inputs.emergencyContacts.email}
-          label="Email"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
-        <TextField
-          required
-          name="emergencyContacts.relationship"
-          value={inputs.emergencyContacts.relationship}
-          label="Relationship"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly.emergencyContacts,
-          }}
-        />
+        {inputs.emergencyContacts.map((contact, index) => (
+          <>
+            <div>Contact {index + 1}</div>
+            <TextField
+              required
+              name="emergencyContacts.fname"
+              value={contact.fname}
+              label="First Name"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+            <TextField
+              required
+              name="emergencyContacts.lname"
+              value={contact.lname}
+              label="Last Name"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+            <TextField
+              name="emergencyContacts.mname"
+              value={contact.mname}
+              label="Middle Name"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+            <TextField
+              name="emergencyContacts.phone"
+              value={contact.phone}
+              label="Phone"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+            <TextField
+              type="email"
+              name="emergencyContacts.email"
+              value={contact.email}
+              label="Email"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+            <TextField
+              required
+              name="emergencyContacts.relationship"
+              value={contact.relationship}
+              label="Relationship"
+              variant="standard"
+              onChange={(e) => handleInputChange(e, index)}
+              InputProps={{
+                readOnly: readOnly.emergencyContacts,
+              }}
+            />
+          </>
+        ))}
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <div className={styles.inputSectionLabel}>Documents</div>
           {readOnly.documents ? (
