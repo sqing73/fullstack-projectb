@@ -9,6 +9,7 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Paper,
 } from "@mui/material";
 import SideMenu from "@/shared/nav";
 import { useDispatch, useSelector } from "react-redux";
@@ -244,6 +245,7 @@ export default function Page() {
   };
 
   return (
+    <Paper sx={{mx: 15, my: 5}}>
     <div style={{ display: "flex" }}>
       {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
@@ -819,5 +821,6 @@ export default function Page() {
         )}
       </Box>
     </div>
+    </Paper>
   );
 }

@@ -10,6 +10,7 @@ import {
   FormControl,
   Box,
   InputAdornment,
+  Paper,
 } from "@mui/material";
 import { apiWithAuth } from "@/utils/api";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,8 +53,10 @@ const Applications = () => {
   return (
     <div style={{ display: "flex" }}>
       {/*<SideMenu />*/}
+      <Paper sx={{mx: 15, my: 5}}>
       {initialized === true &&
         (readOnly ? <ViewApplication /> : <EditApplication api={api} />)}
+      </Paper>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Paper,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import styles from "@/ui/profile.module.css";
@@ -114,6 +115,7 @@ export default function Page({ params }) {
     router.push("/hr/hiring");
   };
   return (
+    <Paper sx={{mx: 15, my: 5}}>
     <div style={{ display: "flex" }}>
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Onboarding Application</h1>
@@ -226,5 +228,6 @@ export default function Page({ params }) {
         </div>
       </Box>
     </div>
+    </Paper>
   );
 }
