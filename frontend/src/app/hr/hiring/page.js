@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import RegistrationContent from "./components/RegistrationContent";
+import OnboardContent from "./components/OnboardContent";
 import { useDispatch, useSelector } from "react-redux";
 import { registrationActions } from "@/store/reducers/registration";
 

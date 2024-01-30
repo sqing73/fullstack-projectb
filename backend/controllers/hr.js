@@ -1,6 +1,7 @@
 const ApiError = require("../errors/ApiError");
 const HrModel = require("../models/hr");
 const jwt = require("jsonwebtoken");
+const EmployeeProfile = require("../models/employeeProfile");
 
 const signin = async (req, res, next) => {
   try {
@@ -43,6 +44,21 @@ const signin = async (req, res, next) => {
   }
 };
 
+// Retrieve a specific employee's visa details
+const getEmployeeProfile = async (req, res) => {
+  try {
+    const profile = await EmployeeProfile.findById(req.params.id).select(
+      "-visaStatus -visaCurrStep"
+    );
+    if (!profile) {
+      return res.status(404).send("Employee profile not found");
+    }
+    res.json(profile);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 // Modify an existing employee's visa record
 const modifyEmployeeProfile = async (req, res) => {
   try {
@@ -50,7 +66,7 @@ const modifyEmployeeProfile = async (req, res) => {
       ...req.body,
     };
     const updatedProfile = await EmployeeProfile.findByIdAndUpdate(
-      req.user.profile,
+      updates._id,
       updates,
       { new: true }
     );
@@ -73,4 +89,4 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { signin, logout, modifyEmployeeProfile };
+module.exports = { signin, logout, getEmployeeProfile, modifyEmployeeProfile };
