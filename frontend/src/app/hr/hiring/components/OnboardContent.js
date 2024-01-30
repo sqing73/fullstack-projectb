@@ -10,12 +10,10 @@ import Paper from "@mui/material/Paper";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import { useSelector, useDispatch } from "react-redux";
 // import { fetchRegistrations } from "@/store/reducers/registration";
 import RegistrationGenerate from "./RegistrationGenerate";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -29,12 +27,8 @@ const style = {
 };
 
 const OnboardContent = () => {
-  const registrations = useSelector(
-    (state) => state.registration.registrations
-  );
   const profiles = useSelector((state) => state.profile.profiles);
   const status = useSelector((state) => state.registration.status);
-  const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -44,9 +38,8 @@ const OnboardContent = () => {
 
   React.useEffect(() => {
     if (!fetched && profiles.length === 0) {
-        // TODO: fetch profiles if need
+      // TODO: fetch profiles if need
     }
-
   }, []);
 
   if (status !== "idle") {
@@ -55,9 +48,10 @@ const OnboardContent = () => {
 
   const handleClick = (id) => {
     return () => {
-        console.log("redirect to ", id);
-    }
-  }
+      console.log("redirect to ", id);
+      redirect(`/application/hr_view/${id}`)
+    };
+  };
   return (
     <>
       {/* generate new token modal */}
@@ -81,9 +75,7 @@ const OnboardContent = () => {
         </Fade>
       </Modal>
 
-      {profiles.length === 0 && (
-        <Typography>No profile found</Typography>
-      )}
+      {profiles.length === 0 && <Typography>No profile found</Typography>}
 
       {profiles.length > 0 && (
         <TableContainer component={Paper}>

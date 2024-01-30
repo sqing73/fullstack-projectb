@@ -13,8 +13,7 @@ import {
 import SideMenu from "@/shared/nav";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
-import styles from "@/ui/profile.module.css"
-
+import styles from "@/ui/profile.module.css";
 
 export default function Page() {
   // init application from server / redux
@@ -99,7 +98,7 @@ export default function Page() {
 
     fetchApplication();
   }, []);
-  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
@@ -122,28 +121,28 @@ export default function Page() {
   // const dispatch = useDispatch();
   const handleEdit = (name) => {
     return () => {
-        if (readOnly.editing === false) {
-            setReadOnly(prevReadOnly => ({
-                ...prevReadOnly,
-                [name]: false,
-                editing: true,
-            }));
-            setBackup(inputs);
-        }
-    }
-  }
+      if (readOnly.editing === false) {
+        setReadOnly((prevReadOnly) => ({
+          ...prevReadOnly,
+          [name]: false,
+          editing: true,
+        }));
+        setBackup(inputs);
+      }
+    };
+  };
   const handleCancel = () => {
     setInputs(backup);
     setReadOnly({
-        name: true,
-        address: true,
-        contact: true,
-        employment: true,
-        emergencyContacts: true,
-        documents: true,
-        editing: false,
-      });
-  }
+      name: true,
+      address: true,
+      contact: true,
+      employment: true,
+      emergencyContacts: true,
+      documents: true,
+      editing: false,
+    });
+  };
   const handleSubmit = () => {
     const state = {
       name: inputs.name ?? {
@@ -196,7 +195,7 @@ export default function Page() {
         email: "",
         relationship: "",
       },
-    }
+    };
     // dispatch(applicationActions.setApplicationInfo({...state}));
     api.put("/", state);
     // @TODO exception handling, redirect to view application
@@ -209,16 +208,34 @@ export default function Page() {
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Personal Information</h1>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <div className={styles.inputSectionLabel}>Name</div>
-            {readOnly.name 
-            ? 
-            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("name")}>Edit</Button>
-            : 
+          <div className={styles.inputSectionLabel}>Name</div>
+          {readOnly.name ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("name")}
+            >
+              Edit
+            </Button>
+          ) : (
             <>
-                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
-                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </>
-            }
+          )}
         </div>
         <TextField
           required
@@ -330,16 +347,34 @@ export default function Page() {
           </Select>
         </FormControl>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <div className={styles.inputSectionLabel}>Contact</div>
-            {readOnly.contact 
-            ? 
-            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("contact")}>Edit</Button>
-            : 
+          <div className={styles.inputSectionLabel}>Contact</div>
+          {readOnly.contact ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("contact")}
+            >
+              Edit
+            </Button>
+          ) : (
             <>
-                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
-                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </>
-            }
+          )}
         </div>
         <TextField
           required
@@ -363,18 +398,36 @@ export default function Page() {
             readOnly: readOnly.contact,
           }}
         />
-        
+
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <div className={styles.inputSectionLabel}>Address</div>
-            {readOnly.address 
-            ? 
-            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("address")}>Edit</Button>
-            : 
+          <div className={styles.inputSectionLabel}>Address</div>
+          {readOnly.address ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("address")}
+            >
+              Edit
+            </Button>
+          ) : (
             <>
-                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
-                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </>
-            }
+          )}
         </div>
         <TextField
           name="address.building"
@@ -431,16 +484,36 @@ export default function Page() {
           }}
         />
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <div className={styles.inputSectionLabel}>Are you permanent resident or citizen of the U.S.?</div>
-            {readOnly.employment 
-            ? 
-            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("employment")}>Edit</Button>
-            : 
+          <div className={styles.inputSectionLabel}>
+            Are you permanent resident or citizen of the U.S.?
+          </div>
+          {readOnly.employment ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("employment")}
+            >
+              Edit
+            </Button>
+          ) : (
             <>
-                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
-                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </>
-            }
+          )}
         </div>
         <FormControl
           variant="standard"
@@ -546,16 +619,34 @@ export default function Page() {
         </div>
 
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <div className={styles.inputSectionLabel}>Emergency Contacts</div>
-            {readOnly.emergencyContacts 
-            ? 
-            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("emergencyContacts")}>Edit</Button>
-            : 
+          <div className={styles.inputSectionLabel}>Emergency Contacts</div>
+          {readOnly.emergencyContacts ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("emergencyContacts")}
+            >
+              Edit
+            </Button>
+          ) : (
             <>
-                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
-                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
             </>
-            }
+          )}
         </div>
         <TextField
           required

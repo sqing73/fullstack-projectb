@@ -1,22 +1,25 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import SideMenu from "@/shared/nav";
-import { Button,
+import {
+  Button,
   TextField,
   MenuItem,
   Select,
   InputLabel,
-  FormControl, Box } from "@mui/material";
+  FormControl,
+  Box,
+} from "@mui/material";
 import { apiWithAuth } from "@/utils/api";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
-import styles from "@/ui/profile.module.css"
+import styles from "@/ui/profile.module.css";
 
 const Applications = () => {
   // @ Init User, Save info to redux, redirect to Start New Application / View Submitted Application automatically
   // const id = 1;
-  
+
   const path = "/employee/profile";
   const api = apiWithAuth(path);
   const [readOnly, setReadOnly] = useState(true);
@@ -28,9 +31,9 @@ const Applications = () => {
       try {
         const response = await api.get("/");
         // setApplication(response.data); // Assuming the response contains the application data
-        dispatch(applicationActions.setApplicationInfo({...response.data}));
+        dispatch(applicationActions.setApplicationInfo({ ...response.data }));
         if (response.data.applicationStatus === "rejected") {
-           setReadOnly(false);
+          setReadOnly(false);
         }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
@@ -43,102 +46,110 @@ const Applications = () => {
     fetchApplication();
   }, []);
 
-  
   return (
     <div style={{ display: "flex" }}>
       {/*<SideMenu />*/}
-      {initialized===true && (readOnly ? <ViewApplication /> : <EditApplication api={api}/>)}
+      {initialized === true &&
+        (readOnly ? <ViewApplication /> : <EditApplication api={api} />)}
     </div>
   );
 };
 
 const ViewApplication = () => {
-  const application = useSelector(state => state.application);
+  const application = useSelector((state) => state.application);
 
   const handleReturn = () => {
     redirect("../");
-  }
-  
+  };
+
   return (
     <div>
-        <Box style={{ padding: "16px" }}>
-          <h1 className={styles.h1}>Onboarding Application</h1>
-          <p>(Read Only)</p>
-          <p>Status: {application.applicationStatus}</p>
-          <div className={styles.inputSectionLabel}>Personal Information</div>
+      <Box style={{ padding: "16px" }}>
+        <h1 className={styles.h1}>Onboarding Application</h1>
+        <p>(Read Only)</p>
+        <p>Status: {application.applicationStatus}</p>
+        <div className={styles.inputSectionLabel}>Personal Information</div>
 
-          <div>First Name: {application.name.first}</div>
-          <div>Last Name: {application.name.last}</div>
-          <div>Middle Name: {application.name.middle}</div>
-          <div>Preferred Name: {application.name.preferred}</div>
-          <div>Profile Picture: {application.profilePicture}</div>
+        <div>First Name: {application.name.first}</div>
+        <div>Last Name: {application.name.last}</div>
+        <div>Middle Name: {application.name.middle}</div>
+        <div>Preferred Name: {application.name.preferred}</div>
+        <div>Profile Picture: {application.profilePicture}</div>
 
-          <div>Cell Phone Number: {application.phoneNumbers.cell}</div>
-          <div>Email: {application.email}</div>
-          <div>SSN: {application.personalInfo.ssn}</div>
-          <div>Date of Birth: {application.personalInfo.dob.split('T')[0]}</div>
-          <div>Gender: {application.personalInfo.gender}</div>
+        <div>Cell Phone Number: {application.phoneNumbers.cell}</div>
+        <div>Email: {application.email}</div>
+        <div>SSN: {application.personalInfo.ssn}</div>
+        <div>Date of Birth: {application.personalInfo.dob.split("T")[0]}</div>
+        <div>Gender: {application.personalInfo.gender}</div>
 
-          <div className={styles.inputSectionLabel}>Address</div>
-          <div>Building/Apt #: {application.address.building}</div>
-          <div>Street: {application.address.street}</div>
-          <div>City: {application.address.city}</div>
-          <div>State: {application.address.state}</div>
-          <div>Zip: {application.address.zip}</div>
+        <div className={styles.inputSectionLabel}>Address</div>
+        <div>Building/Apt #: {application.address.building}</div>
+        <div>Street: {application.address.street}</div>
+        <div>City: {application.address.city}</div>
+        <div>State: {application.address.state}</div>
+        <div>Zip: {application.address.zip}</div>
 
-          <div className={styles.inputSectionLabel}>Residency Status</div>
+        <div className={styles.inputSectionLabel}>Residency Status</div>
+        <div>
+          {application.residencyStatus.status === "Green Card" &&
+            "Yes, I have a green card"}
+          {application.residencyStatus.status === "Citizen" &&
+            "Yes, I am a citizen of the U.S."}
+          {application.residencyStatus.status === "none" && "No"}
+        </div>
+
+        {application.residencyStatus.status === "none" && (
           <div>
-            {application.residencyStatus.status === "Green Card" && "Yes, I have a green card"}
-            {application.residencyStatus.status === "Citizen" && "Yes, I am a citizen of the U.S."}
-            {application.residencyStatus.status === "none" && "No"}
-          </div>
-
-          {application.residencyStatus.status === "none" && (
+            <div className={styles.inputSectionLabel}>Work Authorization</div>
             <div>
-              <div className={styles.inputSectionLabel}>Work Authorization</div>
-              <div>Work Authorization Type: {application.workAuthorization.kind}</div>
-              <div>
-                {application.workAuthorization.kind === "F1(CPT/OPT)" &&
-                  `OPT Receipt: ${application.workAuthorization.proof}`}
-                {application.workAuthorization.kind === "Other" &&
-                  `Visa Title: ${application.workAuthorization.title}`}
-              </div>
-              <div>Start Date: {application.workAuthorization.start.split('T')[0]}</div>
-              <div>End Date: {application.workAuthorization.end.split('T')[0]}</div>
+              Work Authorization Type: {application.workAuthorization.kind}
             </div>
-          )}
-
-          <div className={styles.inputSectionLabel}>Reference</div>
-          <div>First Name: {application.reference.fname}</div>
-          <div>Last Name: {application.reference.lname}</div>
-          <div>Middle Name: {application.reference.mname}</div>
-          <div>Phone: {application.reference.phone}</div>
-          <div>Email: {application.reference.email}</div>
-          <div>Relationship: {application.reference.relationship}</div>
-
-          <div className={styles.inputSectionLabel}>Emergency Contacts</div>
-          <div>First Name: {application.emergencyContacts.fname}</div>
-          <div>Last Name: {application.emergencyContacts.lname}</div>
-          <div>Middle Name: {application.emergencyContacts.mname}</div>
-          <div>Phone: {application.emergencyContacts.phone}</div>
-          <div>Email: {application.emergencyContacts.email}</div>
-          <div>Relationship: {application.emergencyContacts.relationship}</div>
-          <div className={styles.inputSectionLabel}>
-            <Button variant="contained" onClick={handleReturn}>
-              Return
-            </Button>
+            <div>
+              {application.workAuthorization.kind === "F1(CPT/OPT)" &&
+                `OPT Receipt: ${application.workAuthorization.proof}`}
+              {application.workAuthorization.kind === "Other" &&
+                `Visa Title: ${application.workAuthorization.title}`}
+            </div>
+            <div>
+              Start Date: {application.workAuthorization.start.split("T")[0]}
+            </div>
+            <div>
+              End Date: {application.workAuthorization.end.split("T")[0]}
+            </div>
           </div>
-        </Box>
-      </div>
+        )}
+
+        <div className={styles.inputSectionLabel}>Reference</div>
+        <div>First Name: {application.reference.fname}</div>
+        <div>Last Name: {application.reference.lname}</div>
+        <div>Middle Name: {application.reference.mname}</div>
+        <div>Phone: {application.reference.phone}</div>
+        <div>Email: {application.reference.email}</div>
+        <div>Relationship: {application.reference.relationship}</div>
+
+        <div className={styles.inputSectionLabel}>Emergency Contacts</div>
+        <div>First Name: {application.emergencyContacts.fname}</div>
+        <div>Last Name: {application.emergencyContacts.lname}</div>
+        <div>Middle Name: {application.emergencyContacts.mname}</div>
+        <div>Phone: {application.emergencyContacts.phone}</div>
+        <div>Email: {application.emergencyContacts.email}</div>
+        <div>Relationship: {application.emergencyContacts.relationship}</div>
+        <div className={styles.inputSectionLabel}>
+          <Button variant="contained" onClick={handleReturn}>
+            Return
+          </Button>
+        </div>
+      </Box>
+    </div>
   );
-}
+};
 
 const EditApplication = (props) => {
   // init application from server / redux
   // const { id } = params;
   const { api } = props;
-  const [readOnly, setReadOnly] = useState(false); // legacy option
-  const application = useSelector(state => state.application);
+  const readOnly = false; // legacy option
+  const application = useSelector((state) => state.application);
 
   const [inputs, setInputs] = useState({
     name: {
@@ -197,7 +208,7 @@ const EditApplication = (props) => {
   useEffect(() => {
     //
   }, []);
-  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
@@ -220,15 +231,14 @@ const EditApplication = (props) => {
   const dispatch = useDispatch();
 
   const handleFileUploadSuccess = async (filename) => {
-  
     if (filename) {
-      setInputs(prevInputs => ({
+      setInputs((prevInputs) => ({
         ...prevInputs,
         workAuth: {
           ...prevInputs.workAuth,
           proof: filename,
-        }
-      }))
+        },
+      }));
     }
   };
 
@@ -264,23 +274,28 @@ const EditApplication = (props) => {
       workAuthorization: {
         kind: inputs.workAuth.kind ?? "",
         title: inputs.workAuth.kind === "Other" ? inputs.workAuth.title : "",
-        proof: inputs.workAuth.kind === "F1(CPT/OPT)" ? inputs.workAuth.proof : "",
+        proof:
+          inputs.workAuth.kind === "F1(CPT/OPT)" ? inputs.workAuth.proof : "",
         start: "2024-01-01",
         end: "2024-01-01",
       },
-      visaStatus: inputs.workAuth.kind === "F1(CPT/OPT)" ? {
-        OPTreceipt: {
-          step: {
-            status: "pending",
-            file: inputs.workAuth.proof,
-            feedback: null,
-          },
-        },
-        OPTead: null,
-        I20: null,
-        I983: null,
-      } : null,
-      visaCurrStep: inputs.workAuth.kind === "F1(CPT/OPT)" ? "OPTreceipt": "none",
+      visaStatus:
+        inputs.workAuth.kind === "F1(CPT/OPT)"
+          ? {
+              OPTreceipt: {
+                step: {
+                  status: "pending",
+                  file: inputs.workAuth.proof,
+                  feedback: null,
+                },
+              },
+              OPTead: null,
+              I20: null,
+              I983: null,
+            }
+          : null,
+      visaCurrStep:
+        inputs.workAuth.kind === "F1(CPT/OPT)" ? "OPTreceipt" : "none",
       reference: inputs.reference ?? {
         fname: "",
         lname: "",
@@ -298,10 +313,15 @@ const EditApplication = (props) => {
         relationship: "",
       },
       applicationStatus: "pending",
-    }
-    dispatch(applicationActions.setApplicationInfo({...state}));
+      applicationFeedback: "",
+    };
+    dispatch(applicationActions.setApplicationInfo({ ...state }));
     try {
-      api.post("/", state);
+      if (application.applicationStatus === "rejected") {
+        api.put("/", state);
+      } else {
+        api.post("/", state);
+      }
     } catch (err) {
       console.error("Failed to submit user application:", err);
     }
@@ -311,10 +331,9 @@ const EditApplication = (props) => {
     <div style={{ display: "flex" }}>
       {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
-        <h1>Onboarding Application</h1>
-        <p>
-          {readOnly ? "(Read Only)" : ""}
-        </p>
+        <h1 className={styles.h1}>Onboarding Application</h1>
+        <p>Application Status {application.applicationStatus ?? "Unsubmitted"}</p>
+        {application.applicationStatus === "rejected" && <p>Feedback: {application.applicationFeedback}</p>}
         <div className={styles.inputSectionLabel}>Personal Information</div>
         <TextField
           required
@@ -664,7 +683,7 @@ const EditApplication = (props) => {
           }}
         />
 
-<div className={styles.inputSectionLabel}>Emergency Contacts</div>
+        <div className={styles.inputSectionLabel}>Emergency Contacts</div>
         <TextField
           required
           name="emergencyContacts.fname"
@@ -737,6 +756,6 @@ const EditApplication = (props) => {
       </Box>
     </div>
   );
-}
+};
 
 export default Applications;
