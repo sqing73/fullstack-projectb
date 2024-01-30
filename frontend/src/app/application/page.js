@@ -14,8 +14,9 @@ import {
 import { apiWithAuth } from "@/utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import SubmitFile from "@/components/SubmitFile";
+import PreviewFile from "@/components/PreviewFile";
 import styles from "@/ui/profile.module.css";
 
 const Applications = () => {
@@ -342,8 +343,12 @@ const EditApplication = (props) => {
       {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Onboarding Application</h1>
-        <p>Application Status: {application.applicationStatus ?? "Unsubmitted"}</p>
-        {application.applicationStatus === "rejected" && <p>Feedback: {application.applicationFeedback}</p>}
+        <p>
+          Application Status: {application.applicationStatus ?? "Unsubmitted"}
+        </p>
+        {application.applicationStatus === "rejected" && (
+          <p>Feedback: {application.applicationFeedback}</p>
+        )}
         <div className={styles.inputSectionLabel}>Personal Information</div>
         <TextField
           required
@@ -397,12 +402,22 @@ const EditApplication = (props) => {
             readOnly: readOnly,
             endAdornment: (
               <InputAdornment position="end">
-                <SubmitFile image={true} onFileUploadSuccess={handleAvatarFileUploadSuccess} icononly={"true"}/>
+                <SubmitFile
+                  image={true}
+                  onFileUploadSuccess={handleAvatarFileUploadSuccess}
+                  icononly={"true"}
+                  adornment={true}
+                />
+                {inputs.profilePicture !== "" && (
+                  <PreviewFile file={inputs.profilePicture}>
+                    Preview
+                  </PreviewFile>
+                )}
               </InputAdornment>
-            )
+            ),
           }}
         />
-        
+
         <TextField
           required
           name="phoneNumbers.cell"
@@ -588,9 +603,13 @@ const EditApplication = (props) => {
                     readOnly: readOnly,
                     endAdornment: (
                       <InputAdornment position="end">
-                        <SubmitFile onFileUploadSuccess={handleProofFileUploadSuccess} icononly={"true"}/>
+                        <SubmitFile
+                          onFileUploadSuccess={handleProofFileUploadSuccess}
+                          icononly={"true"}
+                          adornment={true}
+                        />
                       </InputAdornment>
-                    )
+                    ),
                   }}
                 />
               ) : inputs.workAuth.kind === "Other" ? (

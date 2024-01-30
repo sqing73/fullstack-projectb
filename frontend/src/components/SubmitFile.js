@@ -14,6 +14,7 @@ const SubmitFile = ({ image = false, onFileUploadSuccess, ...props }) => {
   const [success, setSuccess] = React.useState(false);
   const filetypes = image ? /jpeg|jpg|png/ : /pdf/;
   const iconOnly = props.icononly ?? "false";
+  const adornment = props.adornment ?? false;
 
   const handleFileChange = async (event) => {
     if (event.target.files.length > 0) {
@@ -73,7 +74,7 @@ const SubmitFile = ({ image = false, onFileUploadSuccess, ...props }) => {
           onChange={handleFileChange}
         />
       </Button>
-      {success && <Typography color="green">File Submitted</Typography>}
+      {success && <Typography color="green" sx={adornment ? {mb:-2}: {}}>File Submitted</Typography>}
       {submissionError && (
         <Typography color="red">{submissionError}</Typography>
       )}
