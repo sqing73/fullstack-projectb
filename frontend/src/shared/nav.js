@@ -93,8 +93,8 @@ const SideMenu = (props) => {
         </ListItem>
         <Divider />
         <ListItemLink to="/" primary="Home" />
-        <ListItemLink to="/profile" primary="Personal Information" />
-        <ListItemLink to="/visa" primary="Visa Status Management" />
+        <ListItemLink to="/employee/profile" primary="Personal Information" />
+        <ListItemLink to="/employee/visa-status" primary="Visa Status Management" />
       </List>
     </Drawer>
   );

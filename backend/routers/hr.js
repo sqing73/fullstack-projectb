@@ -2,7 +2,7 @@ const express = require("express");
 const employeeProfileController = require("../controllers/employeeProfileController");
 const hrVisaController = require("../controllers/hrVisaController");
 const { body } = require("express-validator");
-const { signin, logout } = require("../controllers/hr");
+const { signin, logout, modifyEmployeeProfile } = require("../controllers/hr");
 const {
   addRegistration,
   getRegistrationById,
@@ -37,6 +37,9 @@ router
 
 router.get("/assets/userFiles/:filename", fileServeHandler);
 router.get("/assets/userAvatars/:filename", fileServeHandler);
+
+router
+  .put("/profile", modifyEmployeeProfile);
 
 router.get(
   "/noProfileEmployee",

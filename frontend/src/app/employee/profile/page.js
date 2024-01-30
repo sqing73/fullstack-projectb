@@ -205,7 +205,7 @@ export default function Page() {
 
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu />
+      {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Personal Information</h1>
         <div style={{ display: "flex", alignItems: "flex-end" }}>

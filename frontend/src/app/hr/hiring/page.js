@@ -64,6 +64,7 @@ const Page = () => {
           </Button>
         </Stack>
         {content === "registration" && <RegistrationContent />}
+        {content === "onboard" && <OnboardContent />}
       </Stack>
     </>
   );

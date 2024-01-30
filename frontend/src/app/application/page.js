@@ -46,7 +46,7 @@ const Applications = () => {
   
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu />
+      {/*<SideMenu />*/}
       {initialized===true && (readOnly ? <ViewApplication /> : <EditApplication api={api}/>)}
     </div>
   );
@@ -219,6 +219,19 @@ const EditApplication = (props) => {
   };
   const dispatch = useDispatch();
 
+  const handleFileUploadSuccess = async (filename) => {
+  
+    if (filename) {
+      setInputs(prevInputs => ({
+        ...prevInputs,
+        workAuth: {
+          ...prevInputs.workAuth,
+          proof: filename,
+        }
+      }))
+    }
+  };
+
   const handleSubmit = () => {
     const state = {
       name: inputs.name ?? {
@@ -255,6 +268,19 @@ const EditApplication = (props) => {
         start: "2024-01-01",
         end: "2024-01-01",
       },
+      visaStatus: inputs.workAuth.kind === "F1(CPT/OPT)" ? {
+        OPTreceipt: {
+          step: {
+            status: "pending",
+            file: inputs.workAuth.proof,
+            feedback: null,
+          },
+        },
+        OPTead: null,
+        I20: null,
+        I983: null,
+      } : null,
+      visaCurrStep: inputs.workAuth.kind === "F1(CPT/OPT)" ? "OPTreceipt": "none",
       reference: inputs.reference ?? {
         fname: "",
         lname: "",
@@ -283,7 +309,7 @@ const EditApplication = (props) => {
   };
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu />
+      {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
         <h1>Onboarding Application</h1>
         <p>
