@@ -14,6 +14,8 @@ import SideMenu from "@/shared/nav";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
 import styles from "@/ui/profile.module.css";
+import SubmitFile from "@/components/SubmitFile";
+import PreviewFile from "@/components/PreviewFile";
 
 export default function Page() {
   // init application from server / redux
@@ -98,7 +100,25 @@ export default function Page() {
 
     fetchApplication();
   }, []);
-
+  const handleAvatarFileUploadSuccess = async (filename) => {
+    if (filename) {
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        profilePicture: filename,
+      }));
+    }
+  };
+  const handleProofFileUploadSuccess = async (filename) => {
+    if (filename) {
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        workAuth: {
+          ...prevInputs.workAuth,
+          proof: filename,
+        },
+      }));
+    }
+  };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     const [field, subField] = name.split(".");
@@ -316,7 +336,7 @@ export default function Page() {
           required
           type="date"
           name="personalInfo.dob"
-          value={inputs.personalInfo.dob}
+          value={inputs.personalInfo.dob.split("T")[0]}
           label="Date of Birth"
           variant="standard"
           onChange={handleInputChange}
@@ -592,7 +612,7 @@ export default function Page() {
                 required
                 type="date"
                 name="workAuth.start"
-                value={inputs.workAuthorization.start}
+                value={inputs.workAuthorization.start.split("T")[0]}
                 label="Start Date"
                 variant="standard"
                 onChange={handleInputChange}
@@ -604,7 +624,7 @@ export default function Page() {
                 required
                 type="date"
                 name="workAuth.end"
-                value={inputs.workAuthorization.end}
+                value={inputs.workAuthorization.end.split("T")[0]}
                 label="End Date"
                 variant="standard"
                 onChange={handleInputChange}
@@ -712,7 +732,7 @@ export default function Page() {
             readOnly: readOnly.emergencyContacts,
           }}
         />
-      <div style={{ display: "flex", alignItems: "flex-end" }}>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
           <div className={styles.inputSectionLabel}>Documents</div>
           {readOnly.documents ? (
             <Button
@@ -743,6 +763,34 @@ export default function Page() {
           )}
         </div>
         {/* display profile picture and opt receipt if exists */}
+        {inputs.profilePicture !== "" && (
+          <div className={styles.fileSection}>
+            <PreviewFile file={inputs.profilePicture}>Avatar</PreviewFile>
+            {readOnly.documents === false && (
+              <SubmitFile
+                image={true}
+                onFileUploadSuccess={handleAvatarFileUploadSuccess}
+                icononly={"true"}
+                adornment={true}
+              />
+            )}
+          </div>
+        )}
+        {inputs.workAuthorization.proof !== "" && (
+          <div className={styles.fileSection}>
+            <PreviewFile file={inputs.workAuthorization.proof}>
+              OPT Receipt
+            </PreviewFile>
+            {readOnly.documents === false && (
+              <SubmitFile
+                image={true}
+                onFileUploadSuccess={handleProofFileUploadSuccess}
+                icononly={"true"}
+                adornment={true}
+              />
+            )}
+          </div>
+        )}
       </Box>
     </div>
   );

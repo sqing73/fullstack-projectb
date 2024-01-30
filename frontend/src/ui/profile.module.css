@@ -13,3 +13,11 @@
     max-height: 32px;
 
 }
+.fileSection {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.fileSection > * {
+    margin: 10px;
+}
