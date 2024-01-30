@@ -9,11 +9,13 @@ import {
   InputLabel,
   FormControl,
   Box,
+  InputAdornment,
 } from "@mui/material";
 import { apiWithAuth } from "@/utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
 import { useRouter } from 'next/navigation';
+import SubmitFile from "@/components/SubmitFile";
 import styles from "@/ui/profile.module.css";
 
 const Applications = () => {
@@ -230,7 +232,15 @@ const EditApplication = (props) => {
   };
   const dispatch = useDispatch();
 
-  const handleFileUploadSuccess = async (filename) => {
+  const handleAvatarFileUploadSuccess = async (filename) => {
+    if (filename) {
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        profilePicture: filename,
+      }));
+    }
+  };
+  const handleProofFileUploadSuccess = async (filename) => {
     if (filename) {
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -332,7 +342,7 @@ const EditApplication = (props) => {
       {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
         <h1 className={styles.h1}>Onboarding Application</h1>
-        <p>Application Status {application.applicationStatus ?? "Unsubmitted"}</p>
+        <p>Application Status: {application.applicationStatus ?? "Unsubmitted"}</p>
         {application.applicationStatus === "rejected" && <p>Feedback: {application.applicationFeedback}</p>}
         <div className={styles.inputSectionLabel}>Personal Information</div>
         <TextField
@@ -385,9 +395,14 @@ const EditApplication = (props) => {
           onChange={handleInputChange}
           InputProps={{
             readOnly: readOnly,
+            endAdornment: (
+              <InputAdornment position="end">
+                <SubmitFile image={true} onFileUploadSuccess={handleAvatarFileUploadSuccess} icononly={"true"}/>
+              </InputAdornment>
+            )
           }}
         />
-
+        
         <TextField
           required
           name="phoneNumbers.cell"
@@ -571,6 +586,11 @@ const EditApplication = (props) => {
                   onChange={handleInputChange}
                   InputProps={{
                     readOnly: readOnly,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SubmitFile onFileUploadSuccess={handleProofFileUploadSuccess} icononly={"true"}/>
+                      </InputAdornment>
+                    )
                   }}
                 />
               ) : inputs.workAuth.kind === "Other" ? (

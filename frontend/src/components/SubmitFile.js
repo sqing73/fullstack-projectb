@@ -13,6 +13,7 @@ const SubmitFile = ({ image = false, onFileUploadSuccess, ...props }) => {
   const [submitting, setSubmitting] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const filetypes = image ? /jpeg|jpg|png/ : /pdf/;
+  const iconOnly = props.icononly ?? "false";
 
   const handleFileChange = async (event) => {
     if (event.target.files.length > 0) {
@@ -63,7 +64,7 @@ const SubmitFile = ({ image = false, onFileUploadSuccess, ...props }) => {
         startIcon={<CloudUploadIcon />}
         disabled={submitting}
       >
-        {submitting ? "Submitting..." : "Upload file"}
+        {(iconOnly === "false") && (submitting ? "Submitting..." : "Upload file")}
         <input
           type="file"
           name="file"

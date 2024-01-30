@@ -712,6 +712,37 @@ export default function Page() {
             readOnly: readOnly.emergencyContacts,
           }}
         />
+      <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <div className={styles.inputSectionLabel}>Documents</div>
+          {readOnly.documents ? (
+            <Button
+              className={styles.miniButton}
+              variant="contained"
+              disabled={readOnly.editing}
+              onClick={handleEdit("documents")}
+            >
+              Edit
+            </Button>
+          ) : (
+            <>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+              <Button
+                className={styles.miniButton}
+                variant="contained"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+        </div>
+        {/* display profile picture and opt receipt if exists */}
       </Box>
     </div>
   );
