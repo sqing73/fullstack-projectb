@@ -13,20 +13,31 @@ import {
 import SideMenu from "@/shared/nav";
 import { useDispatch, useSelector } from "react-redux";
 import { applicationActions } from "@/store/reducers/application";
+import styles from "@/ui/profile.module.css"
 
 
 export default function Page() {
   // init application from server / redux
   // const { id } = params;
-  const path = "/profile";
+  const path = "/employee/profile";
   const api = apiWithAuth(path);
-  let readOnly = false;
-  let nextStep = "No";
+  const [readOnly, setReadOnly] = useState({
+    name: true,
+    address: true,
+    contact: true,
+    employment: true,
+    emergencyContacts: true,
+    documents: true,
+    editing: false,
+  });
+  const [backup, setBackup] = useState({});
   const [inputs, setInputs] = useState({
-    fname: "", // required
-    lname: "", // required
-    mname: "",
-    pname: "",
+    name: {
+      first: "",
+      last: "",
+      middle: "", // Optional
+      preferred: "", // Optional
+    },
     profilePicture: "",
     address: {
       // required
@@ -36,13 +47,20 @@ export default function Page() {
       state: "",
       zip: "",
     },
-    cell: "", // required
+    phoneNumbers: {
+      cell: "", // required
+      work: "",
+    },
     email: "", // required, init from server
-    ssn: "", // required
-    dob: "2024-01-01", // required
-    gender: "", // required, f/m/unknown
-    citizen: "Green Card", // required, green card/citizen/false
-    workAuth: {
+    personalInfo: {
+      ssn: "", // required
+      dob: "2024-01-01", // required
+      gender: "", // required, f/m/unknown
+    },
+    residencyStatus: {
+      status: "Green Card", // required, green card/citizen/false
+    },
+    workAuthorization: {
       kind: "", // H1-B, L2, F1(CPT/OPT), H4, Other
       title: "", // for Other
       proof: "", // for F1
@@ -60,7 +78,7 @@ export default function Page() {
     emergencyContacts: {
       fname: "",
       lname: "",
-      pname: "",
+      mname: "",
       phone: "",
       email: "",
       relationship: "",
@@ -72,13 +90,10 @@ export default function Page() {
       try {
         const response = await api.get("/");
         setInputs(response.data); // Assuming the response contains the application data
-        dispatch(applicationActions.setApplicationInfo({...response.data}));
-        if (response.data.applicationStatus === "rejected") {
-            redirect(`/application/employee_view/${id}`);
-        }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
-        redirect(`/application/employee_view/${id}`);
+      } finally {
+        // setInitialized(true);
       }
     };
 
@@ -104,26 +119,50 @@ export default function Page() {
       }));
     }
   };
-  const dispatch = useDispatch();
-
+  // const dispatch = useDispatch();
+  const handleEdit = (name) => {
+    return () => {
+        if (readOnly.editing === false) {
+            setReadOnly(prevReadOnly => ({
+                ...prevReadOnly,
+                [name]: false,
+                editing: true,
+            }));
+            setBackup(inputs);
+        }
+    }
+  }
+  const handleCancel = () => {
+    setInputs(backup);
+    setReadOnly({
+        name: true,
+        address: true,
+        contact: true,
+        employment: true,
+        emergencyContacts: true,
+        documents: true,
+        editing: false,
+      });
+  }
   const handleSubmit = () => {
     const state = {
-      name: {
-        first: inputs.fname ?? "",
-        last: inputs.lname ?? "",
-        middle: inputs.mname ?? "",
-        preferred: inputs.pname ?? "",
+      name: inputs.name ?? {
+        first: "",
+        last: "",
+        middle: "", // Optional
+        preferred: "", // Optional
       },
-      personalInfo: {
-        ssn: inputs.ssn ?? "",
-        dob: inputs.dob ?? "2024-01-01",
-        gender: inputs.gender ?? "",
+      personalInfo: inputs.personalInfo ?? {
+        ssn: "",
+        dob: "2024-01-01",
+        gender: "",
       },
       residencyStatus: {
-        status: inputs.citizen ?? "",
+        status: inputs.residencyStatus.status ?? "",
       },
-      phoneNumbers: {
-        cell: inputs.cell ?? "",
+      phoneNumbers: inputs.phoneNumbers ?? {
+        cell: "",
+        work: "", // Separate cell and work numbers
       },
       email: inputs.email ?? "",
       profilePicture: inputs.profilePicture ?? "",
@@ -152,68 +191,75 @@ export default function Page() {
       emergencyContacts: inputs.emergencyContacts ?? {
         fname: "",
         lname: "",
-        pname: "",
+        mname: "",
         phone: "",
         email: "",
         relationship: "",
       },
-      applicationStatus: "pending",
     }
-    dispatch(applicationActions.setApplicationInfo({...state}));
-    api.post(`/${id}`, state);
+    // dispatch(applicationActions.setApplicationInfo({...state}));
+    api.put("/", state);
     // @TODO exception handling, redirect to view application
     // console.log("submit:", inputs);
   };
-  // application states: unsubmitted, pending(*), approved(*), rejected, *=readOnly
+
   return (
     <div style={{ display: "flex" }}>
-      <SideMenu />
+      {/*<SideMenu />*/}
       <Box style={{ padding: "16px" }}>
-        <h1>Onboarding Application</h1>
-        <p>
-          Application ID: {id} {readOnly ? "(Read Only)" : ""}
-        </p>
-        <div className="input-section-label">Personal Information</div>
+        <h1 className={styles.h1}>Personal Information</h1>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <div className={styles.inputSectionLabel}>Name</div>
+            {readOnly.name 
+            ? 
+            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("name")}>Edit</Button>
+            : 
+            <>
+                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
+                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+            </>
+            }
+        </div>
         <TextField
           required
-          name="fname"
-          value={inputs.fname}
+          name="name.first"
+          value={inputs.name.first}
           label="First Name"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
           required
-          name="lname"
-          value={inputs.lname}
+          name="name.last"
+          value={inputs.name.last}
           label="Last Name"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
-          name="mname"
-          value={inputs.mname}
+          name="name.middle"
+          value={inputs.name.middle}
           label="Middle Name"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
-          name="pname"
-          value={inputs.pname}
+          name="name.preferred"
+          value={inputs.name.preferred}
           label="Preferred Name"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
@@ -223,19 +269,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-
-        <TextField
-          required
-          name="cell"
-          value={inputs.cell}
-          label="Cell Phone Number"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
@@ -247,30 +281,30 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
           required
-          name="ssn"
-          value={inputs.ssn}
+          name="personalInfo.ssn"
+          value={inputs.personalInfo.ssn}
           label="SSN"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <TextField
           required
           type="date"
-          name="dob"
-          value={inputs.dob}
+          name="personalInfo.dob"
+          value={inputs.personalInfo.dob}
           label="Date of Birth"
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.name,
           }}
         />
         <FormControl
@@ -281,21 +315,67 @@ export default function Page() {
           <InputLabel id="gender-select-label">Gender</InputLabel>
           <Select
             required
-            name="gender"
+            name="personalInfo.gender"
             labelId="gender-select-label"
-            value={inputs.gender}
+            value={inputs.personalInfo.gender}
             label="Gender"
             onChange={handleInputChange}
             inputProps={{
-              readOnly: readOnly,
+              readOnly: readOnly.name,
             }}
           >
-            <MenuItem value={"male"}>Male</MenuItem>
-            <MenuItem value={"female"}>Female</MenuItem>
-            <MenuItem value={"unknown"}>I do not wish to answer</MenuItem>
+            <MenuItem value={"Male"}>Male</MenuItem>
+            <MenuItem value={"Female"}>Female</MenuItem>
+            <MenuItem value={"Other"}>I do not wish to answer</MenuItem>
           </Select>
         </FormControl>
-        <div className="input-section-label">Address</div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <div className={styles.inputSectionLabel}>Contact</div>
+            {readOnly.contact 
+            ? 
+            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("contact")}>Edit</Button>
+            : 
+            <>
+                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
+                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+            </>
+            }
+        </div>
+        <TextField
+          required
+          name="phoneNumbers.cell"
+          value={inputs.phoneNumbers.cell}
+          label="Cell Phone Number"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly.contact,
+          }}
+        />
+        <TextField
+          required
+          name="phoneNumbers.work"
+          value={inputs.phoneNumbers.work}
+          label="Work Phone Number"
+          variant="standard"
+          onChange={handleInputChange}
+          InputProps={{
+            readOnly: readOnly.contact,
+          }}
+        />
+        
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <div className={styles.inputSectionLabel}>Address</div>
+            {readOnly.address 
+            ? 
+            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("address")}>Edit</Button>
+            : 
+            <>
+                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
+                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+            </>
+            }
+        </div>
         <TextField
           name="address.building"
           value={inputs.address.building}
@@ -303,7 +383,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.address,
           }}
         />
         <TextField
@@ -314,7 +394,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.address,
           }}
         />
         <TextField
@@ -325,7 +405,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.address,
           }}
         />
         <TextField
@@ -336,7 +416,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.address,
           }}
         />
         <TextField
@@ -347,12 +427,20 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.address,
           }}
         />
-
-        <div className="input-section-label">
-          Are you permanent resident or citizen of the U.S.?
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <div className={styles.inputSectionLabel}>Are you permanent resident or citizen of the U.S.?</div>
+            {readOnly.employment 
+            ? 
+            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("employment")}>Edit</Button>
+            : 
+            <>
+                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
+                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+            </>
+            }
         </div>
         <FormControl
           variant="standard"
@@ -361,12 +449,12 @@ export default function Page() {
         >
           <Select
             required
-            name="citizen"
+            name="residencyStatus.status"
             label=""
-            value={inputs.citizen}
+            value={inputs.residencyStatus.status}
             onChange={handleInputChange}
             inputProps={{
-              readOnly: readOnly,
+              readOnly: readOnly.employment,
             }}
           >
             <MenuItem value={"Green Card"}>Yes, I have green card</MenuItem>
@@ -375,7 +463,7 @@ export default function Page() {
           </Select>
         </FormControl>
         <div>
-          {inputs.citizen === "false" ? (
+          {inputs.residencyStatus.status === "none" ? (
             <div>
               <FormControl
                 variant="standard"
@@ -388,10 +476,10 @@ export default function Page() {
                   name="workAuth.kind"
                   labelId="wa-select-label"
                   label="Work Authorization"
-                  value={inputs.workAuth.kind}
+                  value={inputs.workAuthorization.kind}
                   onChange={handleInputChange}
                   inputProps={{
-                    readOnly: readOnly,
+                    readOnly: readOnly.employment,
                   }}
                 >
                   <MenuItem value={"H1-B"}>H1-B</MenuItem>
@@ -401,26 +489,26 @@ export default function Page() {
                   <MenuItem value={"Other"}>Other</MenuItem>
                 </Select>
               </FormControl>
-              {inputs.workAuth.kind === "F1(OPT/CPT)" ? (
+              {inputs.workAuthorization.kind === "F1(CPT/OPT)" ? (
                 <TextField
                   name="workAuth.proof"
-                  value={inputs.workAuth.proof}
+                  value={inputs.workAuthorization.proof}
                   label={"OPT Receipt"}
                   variant="standard"
                   onChange={handleInputChange}
                   InputProps={{
-                    readOnly: readOnly,
+                    readOnly: readOnly.employment,
                   }}
                 />
-              ) : inputs.workAuth.kind === "Other" ? (
+              ) : inputs.workAuthorization.kind === "Other" ? (
                 <TextField
                   name="workAuth.title"
-                  value={inputs.workAuth.title}
+                  value={inputs.workAuthorization.title}
                   label={"Visa Title"}
                   variant="standard"
                   onChange={handleInputChange}
                   InputProps={{
-                    readOnly: readOnly,
+                    readOnly: readOnly.employment,
                   }}
                 />
               ) : (
@@ -431,24 +519,24 @@ export default function Page() {
                 required
                 type="date"
                 name="workAuth.start"
-                value={inputs.workAuth.start}
+                value={inputs.workAuthorization.start}
                 label="Start Date"
                 variant="standard"
                 onChange={handleInputChange}
                 InputProps={{
-                  readOnly: readOnly,
+                  readOnly: readOnly.employment,
                 }}
               />
               <TextField
                 required
                 type="date"
                 name="workAuth.end"
-                value={inputs.workAuth.end}
+                value={inputs.workAuthorization.end}
                 label="End Date"
                 variant="standard"
                 onChange={handleInputChange}
                 InputProps={{
-                  readOnly: readOnly,
+                  readOnly: readOnly.employment,
                 }}
               />
             </div>
@@ -456,73 +544,19 @@ export default function Page() {
             <div></div>
           )}
         </div>
-        <div className="input-section-label">Reference</div>
-        <TextField
-          required
-          name="reference.fname"
-          value={inputs.reference.fname}
-          label="First Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-        <TextField
-          required
-          name="reference.lname"
-          value={inputs.reference.lname}
-          label="Last Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-        <TextField
-          name="reference.mname"
-          value={inputs.reference.mname}
-          label="Middle Name"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-        <TextField
-          name="reference.phone"
-          value={inputs.reference.phone}
-          label="Phone"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-        <TextField
-          type="email"
-          name="reference.email"
-          value={inputs.reference.email}
-          label="Email"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
-        <TextField
-          required
-          name="reference.relationship"
-          value={inputs.reference.relationship}
-          label="Relationship"
-          variant="standard"
-          onChange={handleInputChange}
-          InputProps={{
-            readOnly: readOnly,
-          }}
-        />
 
-<div className="input-section-label">Emergency Contacts</div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <div className={styles.inputSectionLabel}>Emergency Contacts</div>
+            {readOnly.emergencyContacts 
+            ? 
+            <Button className={styles.miniButton} variant="contained" disabled={readOnly.editing} onClick={handleEdit("emergencyContacts")}>Edit</Button>
+            : 
+            <>
+                <Button className={styles.miniButton} variant="contained" onClick={handleSubmit}>Save</Button>
+                <Button className={styles.miniButton} variant="contained" onClick={handleCancel}>Cancel</Button>
+            </>
+            }
+        </div>
         <TextField
           required
           name="emergencyContacts.fname"
@@ -531,7 +565,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
         <TextField
@@ -542,7 +576,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
         <TextField
@@ -552,7 +586,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
         <TextField
@@ -562,7 +596,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
         <TextField
@@ -573,7 +607,7 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
         <TextField
@@ -584,14 +618,9 @@ export default function Page() {
           variant="standard"
           onChange={handleInputChange}
           InputProps={{
-            readOnly: readOnly,
+            readOnly: readOnly.emergencyContacts,
           }}
         />
-        <div className="input-section-label">
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </div>
       </Box>
     </div>
   );

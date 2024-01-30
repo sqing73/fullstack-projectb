@@ -105,7 +105,7 @@ exports.modifyEmployeeProfile = async (req, res) => {
       updates,
       { new: true }
     );
-    if (!profile) {
+    if (!updatedProfile) {
       return res.status(404).send("Employer not found");
     }
     res.json(updatedProfile); // Send back the updated profile
