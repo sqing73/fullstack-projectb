@@ -390,7 +390,7 @@ const EditApplication = (props) => {
           value={inputs.name.first}
           label="First Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -401,7 +401,7 @@ const EditApplication = (props) => {
           value={inputs.name.last}
           label="Last Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -411,7 +411,7 @@ const EditApplication = (props) => {
           value={inputs.name.middle}
           label="Middle Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -421,7 +421,7 @@ const EditApplication = (props) => {
           value={inputs.name.preferred}
           label="Preferred Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -431,7 +431,7 @@ const EditApplication = (props) => {
           value={inputs.profilePicture}
           label="Profile Picture"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
             endAdornment: (
@@ -458,7 +458,7 @@ const EditApplication = (props) => {
           value={inputs.phoneNumbers.cell}
           label="Cell Phone Number"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -470,7 +470,7 @@ const EditApplication = (props) => {
           value={inputs.email}
           label="Email"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -481,7 +481,7 @@ const EditApplication = (props) => {
           value={inputs.personalInfo.ssn}
           label="SSN"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -493,7 +493,7 @@ const EditApplication = (props) => {
           value={inputs.personalInfo.dob}
           label="Date of Birth"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -510,7 +510,7 @@ const EditApplication = (props) => {
             labelId="gender-select-label"
             value={inputs.personalInfo.gender}
             label="Gender"
-            onChange={handleInputChange}
+            onChange={e => handleInputChange(e)}
             inputProps={{
               readOnly: readOnly,
             }}
@@ -526,7 +526,7 @@ const EditApplication = (props) => {
           value={inputs.address.building}
           label="Building/Apt #"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -537,7 +537,7 @@ const EditApplication = (props) => {
           value={inputs.address.street}
           label="Street"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -548,7 +548,7 @@ const EditApplication = (props) => {
           value={inputs.address.city}
           label="City"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -559,7 +559,7 @@ const EditApplication = (props) => {
           value={inputs.address.state}
           label="State"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -570,7 +570,7 @@ const EditApplication = (props) => {
           value={inputs.address.zip}
           label="Zip"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -589,7 +589,7 @@ const EditApplication = (props) => {
             name="residencyStatus.status"
             label=""
             value={inputs.residencyStatus.status}
-            onChange={handleInputChange}
+            onChange={e => handleInputChange(e)}
             inputProps={{
               readOnly: readOnly,
             }}
@@ -614,7 +614,7 @@ const EditApplication = (props) => {
                   labelId="wa-select-label"
                   label="Work Authorization"
                   value={inputs.workAuth.kind}
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   inputProps={{
                     readOnly: readOnly,
                   }}
@@ -632,7 +632,7 @@ const EditApplication = (props) => {
                   value={inputs.workAuth.proof}
                   label={"OPT Receipt"}
                   variant="standard"
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   InputProps={{
                     readOnly: readOnly,
                     endAdornment: (
@@ -652,7 +652,7 @@ const EditApplication = (props) => {
                   value={inputs.workAuth.title}
                   label={"Visa Title"}
                   variant="standard"
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   InputProps={{
                     readOnly: readOnly,
                   }}
@@ -668,7 +668,7 @@ const EditApplication = (props) => {
                 value={inputs.workAuth.start}
                 label="Start Date"
                 variant="standard"
-                onChange={handleInputChange}
+                onChange={e => handleInputChange(e)}
                 InputProps={{
                   readOnly: readOnly,
                 }}
@@ -680,7 +680,7 @@ const EditApplication = (props) => {
                 value={inputs.workAuth.end}
                 label="End Date"
                 variant="standard"
-                onChange={handleInputChange}
+                onChange={e => handleInputChange(e)}
                 InputProps={{
                   readOnly: readOnly,
                 }}
@@ -697,7 +697,7 @@ const EditApplication = (props) => {
           value={inputs.reference.fname}
           label="First Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -708,7 +708,7 @@ const EditApplication = (props) => {
           value={inputs.reference.lname}
           label="Last Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -718,7 +718,7 @@ const EditApplication = (props) => {
           value={inputs.reference.mname}
           label="Middle Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -728,7 +728,7 @@ const EditApplication = (props) => {
           value={inputs.reference.phone}
           label="Phone"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -739,7 +739,7 @@ const EditApplication = (props) => {
           value={inputs.reference.email}
           label="Email"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}
@@ -750,7 +750,7 @@ const EditApplication = (props) => {
           value={inputs.reference.relationship}
           label="Relationship"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly,
           }}

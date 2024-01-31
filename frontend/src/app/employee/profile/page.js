@@ -286,7 +286,7 @@ export default function Page() {
           value={inputs.name.first}
           label="First Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -297,7 +297,7 @@ export default function Page() {
           value={inputs.name.last}
           label="Last Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -307,7 +307,7 @@ export default function Page() {
           value={inputs.name.middle}
           label="Middle Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -317,7 +317,7 @@ export default function Page() {
           value={inputs.name.preferred}
           label="Preferred Name"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -327,7 +327,7 @@ export default function Page() {
           value={inputs.profilePicture}
           label="Profile Picture"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -339,7 +339,7 @@ export default function Page() {
           value={inputs.email}
           label="Email"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -350,7 +350,7 @@ export default function Page() {
           value={inputs.personalInfo.ssn}
           label="SSN"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -362,7 +362,7 @@ export default function Page() {
           value={inputs.personalInfo.dob.split("T")[0]}
           label="Date of Birth"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.name,
           }}
@@ -379,7 +379,7 @@ export default function Page() {
             labelId="gender-select-label"
             value={inputs.personalInfo.gender}
             label="Gender"
-            onChange={handleInputChange}
+            onChange={e => handleInputChange(e)}
             inputProps={{
               readOnly: readOnly.name,
             }}
@@ -425,7 +425,7 @@ export default function Page() {
           value={inputs.phoneNumbers.cell}
           label="Cell Phone Number"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.contact,
           }}
@@ -436,7 +436,7 @@ export default function Page() {
           value={inputs.phoneNumbers.work}
           label="Work Phone Number"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.contact,
           }}
@@ -477,7 +477,7 @@ export default function Page() {
           value={inputs.address.building}
           label="Building/Apt #"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.address,
           }}
@@ -488,7 +488,7 @@ export default function Page() {
           value={inputs.address.street}
           label="Street"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.address,
           }}
@@ -499,7 +499,7 @@ export default function Page() {
           value={inputs.address.city}
           label="City"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.address,
           }}
@@ -510,7 +510,7 @@ export default function Page() {
           value={inputs.address.state}
           label="State"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.address,
           }}
@@ -521,7 +521,7 @@ export default function Page() {
           value={inputs.address.zip}
           label="Zip"
           variant="standard"
-          onChange={handleInputChange}
+          onChange={e => handleInputChange(e)}
           InputProps={{
             readOnly: readOnly.address,
           }}
@@ -568,7 +568,7 @@ export default function Page() {
             name="residencyStatus.status"
             label=""
             value={inputs.residencyStatus.status}
-            onChange={handleInputChange}
+            onChange={e => handleInputChange(e)}
             inputProps={{
               readOnly: readOnly.employment,
             }}
@@ -593,7 +593,7 @@ export default function Page() {
                   labelId="wa-select-label"
                   label="Work Authorization"
                   value={inputs.workAuthorization.kind}
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   inputProps={{
                     readOnly: readOnly.employment,
                   }}
@@ -611,7 +611,7 @@ export default function Page() {
                   value={inputs.workAuthorization.proof}
                   label={"OPT Receipt"}
                   variant="standard"
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   InputProps={{
                     readOnly: readOnly.employment,
                   }}
@@ -622,7 +622,7 @@ export default function Page() {
                   value={inputs.workAuthorization.title}
                   label={"Visa Title"}
                   variant="standard"
-                  onChange={handleInputChange}
+                  onChange={e => handleInputChange(e)}
                   InputProps={{
                     readOnly: readOnly.employment,
                   }}
@@ -638,7 +638,7 @@ export default function Page() {
                 value={inputs.workAuthorization.start.split("T")[0]}
                 label="Start Date"
                 variant="standard"
-                onChange={handleInputChange}
+                onChange={e => handleInputChange(e)}
                 InputProps={{
                   readOnly: readOnly.employment,
                 }}
@@ -650,7 +650,7 @@ export default function Page() {
                 value={inputs.workAuthorization.end.split("T")[0]}
                 label="End Date"
                 variant="standard"
-                onChange={handleInputChange}
+                onChange={e => handleInputChange(e)}
                 InputProps={{
                   readOnly: readOnly.employment,
                 }}
