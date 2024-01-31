@@ -21,6 +21,7 @@ export default function Page({ params }) {
   const path = "/hr/profile";
   const api = apiWithAuth(path);
   const [initialized, setInitialized] = useState(false);
+  const [locked, setLocked] = useState(false);
   const [application, setApplication] = useState({
     name: {
       first: "",
@@ -101,6 +102,9 @@ export default function Page({ params }) {
         console.error("Failed to fetch user profile:", err);
       } finally {
         setInitialized(true);
+        if (application.applicationStatus === "approved") {
+          setLocked(true);
+        }
       }
     };
 
@@ -210,11 +214,13 @@ export default function Page({ params }) {
               onChange={handleDecision}
             >
               <FormControlLabel
+                disabled={locked}
                 value="approved"
                 control={<Radio />}
                 label="Approve"
               />
               <FormControlLabel
+                disabled={locked}
                 value="rejected"
                 control={<Radio />}
                 label="Reject"
