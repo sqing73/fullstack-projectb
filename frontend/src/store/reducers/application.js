@@ -38,7 +38,7 @@ const initialApplicationState = {
     start: "2024-01-01",
     end: "2024-01-01",
   },
-  visaStatus: null,
+  visaStatus: {},
   visaCurrStep: "none",
   reference: {
     fname: "",

@@ -18,7 +18,7 @@ const Link = styled(MuiLink)({
 const dotRe = /\.([a-zA-Z]+)$/;
 const imageFile = /jpeg|jpg|png/;
 
-const PreviewFile = ({ file, hrPreview = false, children }) => {
+const PreviewFile = ({ file, hrPreview = false, children, ...props }) => {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [url, setUrl] = React.useState(null);
@@ -68,7 +68,7 @@ const PreviewFile = ({ file, hrPreview = false, children }) => {
 
   return (
     <>
-      <Link onClick={handleOpen}>{children}</Link>
+      <Link onClick={handleOpen} {...props}>{children}</Link>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

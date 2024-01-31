@@ -246,13 +246,13 @@ const ProfielDetail = ({ profile }) => {
                         profile.workAuthorization.end
                       ).toLocaleDateString()}
                     </Typography>
-                    <Typography>
+                    {/* <Typography>
                       File:{" "}
                       <PreviewFile
                         file={profile.workAuthorization?.proof}
                         hrPreview={true}
                       />
-                    </Typography>
+                    </Typography> */}
                   </Stack>
                 </CardContent>
               </Collapse>

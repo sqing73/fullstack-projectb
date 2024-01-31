@@ -123,8 +123,10 @@ const VisaStatusPage = () => {
           <MenuItem value="I20">I-20</MenuItem>
         </Select> */}
         </FormControl>
+        <PreviewFile file="template1.pdf" sx={{mt: 2}}>I983 template1</PreviewFile>
+        <PreviewFile file="template2.pdf">I983 template2</PreviewFile>
         {visaData.visaCurrStep !== "complete" &&
-          visaData.visaCurrStep !== "none" && (
+          visaData.visaCurrStep !== "none" && (!visaData.visaStatus[visaData.visaCurrStep] || visaData.visaStatus[visaData.visaCurrStep].step.status === "rejected") && (
             <div style={{ marginTop: "20px" }}>
               <SubmitFile onFileUploadSuccess={handleFileUploadSuccess} />
               {/* <SubmitFile onUploadSuccess={handleFileUploadSuccess} stepName={selectedStep} /> */}

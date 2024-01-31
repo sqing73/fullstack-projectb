@@ -45,7 +45,7 @@ const OnboardContent = () => {
       dispatch(fetchProfiles());
     }
     return () => setFetched(true);
-  }, [fetched, profiles]);
+  }, []);
 
   if (status !== "idle") {
     return <Typography>Loading...</Typography>;
