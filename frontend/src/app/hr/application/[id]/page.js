@@ -98,13 +98,13 @@ export default function Page({ params }) {
       try {
         const response = await api.get(`/${id}`);
         setApplication(response.data);
+        if (response.data.applicationStatus == "approved") {
+          setLocked(true);
+        }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
       } finally {
         setInitialized(true);
-        if (application.applicationStatus === "approved") {
-          setLocked(true);
-        }
       }
     };
 
