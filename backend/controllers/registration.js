@@ -40,11 +40,12 @@ const addRegistration = async (req, res, next) => {
       throw new ApiError("Registration already exists");
     }
     const link = `${process.env.CLIENT_URL}/register/${newRegistration._id}`;
+    const expiration = new Date(new Date(newRegistration.createdAt).getTime() + 3 * 60 * 60 * 1000).toLocaleString();
     const emailContent = `<h2>Hi, ${employee}</h2>
     <p>Please use the link and token below to register your employee account and complete onboarding application</p>
     <p>link: <a href="${link}">${link}</a></p>
     <p>Token: ${newRegistration.token}</p>
-    <p>This token is valid for 3 hours till <b>${newRegistration.createdAt}.</b></p>`;
+    <p>This token is valid for 3 hours till <b>${expiration}.</b></p>`;
     await sendEmail(email, emailContent);
     res.status(201).json({
       message: `Registration created successfully and an invitation was sent to ${email}.`,
