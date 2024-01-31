@@ -237,11 +237,13 @@ export default function Page({ params }) {
               onChange={handleFeedback}
             />
           )}
-          <div className={styles.inputSectionLabel}>
-            <Button variant="contained" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </div>
+          {locked === false && (
+            <div className={styles.inputSectionLabel}>
+              <Button variant="contained" onClick={handleSubmit}>
+                Submit
+              </Button>
+            </div>
+          )}
         </Box>
       </div>
     </Paper>
